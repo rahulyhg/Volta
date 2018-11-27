@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="true">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/etude_technique" />
+
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/informations_de_base" />
+
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_margin="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton android:id="@+id/mrRbtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mr"/>
+
+                    <RadioButton android:id="@+id/mmeRbtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/mme"/>
+
+                    <RadioButton
+                        android:id="@+id/mlleRbtn"
+                        android:layout_marginStart="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mlle"/>
+
+                </RadioGroup>
+
+
+                <LinearLayout
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/nameEt"
+                        android:textColor="@android:color/black"
+                        android:hint="@string/nom"
+                        android:textSize="22sp"
+                        android:layout_margin="8dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+
+
+                    <EditText
+                        android:id="@+id/lastNameEt"
+                        android:textColor="@android:color/black"
+                        android:hint="@string/prenom"
+                        android:textSize="22sp"
+                        android:layout_margin="8dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/phoneEt"
+                        android:textColor="@android:color/black"
+                        android:layout_margin="8dp"
+                        android:textSize="22sp"
+                        android:hint="@string/telephone"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+
+
+                    <EditText
+                        android:id="@+id/mailEt"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp"
+                        android:layout_margin="8dp"
+                        android:hint="@string/email"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/localisation" />
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/localisationFoundLyt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/placeCityTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/placeAddressTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="16dp"
+                            android:textColor="#90000000"
+                            android:textSize="22sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/searchingLocalisationLyt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="24dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/localisation_en_cours"
+                            android:textColor="@android:color/black"
+                            android:textSize="24sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/localisationButtonsLyt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/searchAddressBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_location_searching_black_24dp" />
+
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/editAddressBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_edit_location_black_24dp" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    class="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <TextView
+                style="@style/TextViewLabelCategory"
+                android:text="@string/consommation_electrique" />
+
+            <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/consoElectriqueEt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginStart="24dp"
+                        android:gravity="end"
+                        android:inputType="number"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="@string/kwh_an"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp" />
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewLabelCategory"
+                android:text="@string/cout_electricite" />
+
+            <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/coutElectriciteEt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="3"
+                        android:gravity="end"
+                        android:inputType="number"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="@string/euro_kwh"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp" />
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/hauteur_sous_plafond" />
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <com.jmjsolution.solarup.utils.SeekbarWithIntervals
+                android:id="@+id/seekBarWithIntervals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="24dp" />
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/type_de_chauffage" />
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="24dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/gplChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_lpg" />
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/gpl" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/electricChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_electric" />
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/electrique" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/gazChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_gas" />
+
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/gaz" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/charbonChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_coal" />
+
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/charbon" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="24dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/pacChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_pompe_a_chaleur" />
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/pac" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/boisChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_wood" />
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/bois" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/fioulChauffageIv"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_iconfinder_oil" />
+
+                        <TextView
+                            style="@style/TextViewChauffage"
+                            android:text="@string/fioul" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/surface_de_la_toiture" />
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <com.jmjsolution.solarup.utils.SeekbarWithIntervals
+                android:id="@+id/seekBarWithIntervalsToiture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="24dp" />
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextViewLabelCategory"
+                    android:text="@string/inclinaison" />
+                <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/inclinaisonEt"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginBottom="24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_weight="4"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginBottom="24dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:text="@string/degrees"
+                            android:textColor="@android:color/black"
+                            android:textSize="24sp" />
+
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextViewLabelCategory"
+                    android:text="@string/azimuth" />
+                <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/azimuthEt"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginBottom="24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_weight="4"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginBottom="24dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:text="@string/degrees"
+                            android:textColor="@android:color/black"
+                            android:textSize="24sp" />
+
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/eau_chaude_sanitaire" />
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/chauffeEauElectriqueTv"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:text="@string/chauffe_eau_electrique" />
+
+
+                <TextView
+                    android:id="@+id/chauffeEauGazAv89Tv"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:text="@string/chauffe_eau_gaz_installe_avant_1989" />
+
+                <TextView
+                    android:id="@+id/chauffeEauThermoTv"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/chauffe_eau_thermodynamique" />
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/submitBtn"
+            android:textSize="22sp"
+            android:text="@string/envoyer"
+            android:background="@drawable/layout_bg"
+            android:layout_margin="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+</ScrollView>

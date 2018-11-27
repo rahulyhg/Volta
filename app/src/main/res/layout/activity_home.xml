@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/app_name"
+            android:gravity="start"
+            android:fontFamily="serif-monospace"
+            android:textStyle="bold"
+            android:textSize="48sp"
+            android:padding="16dp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:textColorSelected="#FFFF"/>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <android.support.v7.widget.CardView
+                app:cardBackgroundColor="@android:color/white"
+                android:transitionName="realisationTransition"
+                android:id="@+id/realisationLayout"
+                app:layout_constraintTop_toBottomOf="@id/toolBar"
+                style="@style/CardViewHome">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/ic_date_range_black_24dp" />
+
+                    <TextView
+                        android:text="@string/mon_agenda"
+                        style="@style/TextViewHome"/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:transitionName="projectTransition"
+                android:id="@+id/projetLayout"
+                style="@style/CardViewHome"
+                app:layout_constraintTop_toBottomOf="@id/realisationLayout">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/file_tree" />
+
+                    <TextView
+                        android:text="@string/mes_projets"
+                        style="@style/TextViewHome" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <android.support.v7.widget.CardView
+                android:transitionName="newProjectTransition"
+                android:id="@+id/newProjectLayout"
+                app:layout_constraintTop_toBottomOf="@id/projetLayout"
+                style="@style/CardViewHome">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/ic_add_black_24dp" />
+
+                    <TextView
+                        android:text="@string/nouveau_projet"
+                        style="@style/TextViewHome" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:transitionName="reglagesTransition"
+                android:id="@+id/reglagesLayout"
+                app:layout_constraintTop_toBottomOf="@id/newProjectLayout"
+                style="@style/CardViewHome">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/ic_settings_black_24dp" />
+
+                    <TextView
+                        android:text="@string/r_glages"
+                        style="@style/TextViewHome" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <android.support.v7.widget.CardView
+                android:transitionName="contactUsTransition"
+                android:id="@+id/contactUsLayout"
+                app:layout_constraintTop_toBottomOf="@id/newProjectLayout"
+                style="@style/CardViewHome">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/ic_phone_black_24dp" />
+
+                    <TextView
+                        android:text="@string/contactez_nous"
+                        style="@style/TextViewHome" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:transitionName="infosTransition"
+                android:id="@+id/infosLayout"
+                app:layout_constraintTop_toBottomOf="@id/newProjectLayout"
+                style="@style/CardViewHome">
+
+                <LinearLayout
+                    style="@style/LinearLayoutHome">
+
+                    <ImageView
+                        style="@style/IconHome"
+                        android:src="@drawable/ic_info_outline_black_24dp" />
+
+                    <TextView
+                        android:text="@string/a_propos"
+                        style="@style/TextViewHome" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

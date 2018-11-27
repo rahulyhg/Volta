@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1078149861691",
+    "firebase_url": "https://solarup-38be5.firebaseio.com",
+    "project_id": "solarup-38be5",
+    "storage_bucket": "solarup-38be5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078149861691:android:54674fd274ba25d3",
+        "android_client_info": {
+          "package_name": "com.jmjsolution.solarup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078149861691-r2las1bgagnl879tsuaics61cmmfhola.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jmjsolution.solarup",
+            "certificate_hash": "d192d730534fddbd9dcdc2dea60e084a3ab03a9b"
+          }
+        },
+        {
+          "client_id": "1078149861691-nuv6ga963skmq7g9bjac1a035v3jbjl4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcNJXZGdATFKrDO48Y8CI0KMzarZp4mZE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078149861691-nuv6ga963skmq7g9bjac1a035v3jbjl4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
