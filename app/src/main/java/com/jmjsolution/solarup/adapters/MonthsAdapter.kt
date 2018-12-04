@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.jmjsolution.solarup.utils.EventsCalendarUtil
 import com.jmjsolution.solarup.views.EventsCalendar
 import com.jmjsolution.solarup.views.MonthView
-import java.util.Calendar
+import java.util.*
 
 class MonthsAdapter(viewPager: EventsCalendar, startMonth: Calendar, endMonth: Calendar) : PagerAdapter() {
     private val mContext: Context = viewPager.context
@@ -18,8 +18,8 @@ class MonthsAdapter(viewPager: EventsCalendar, startMonth: Calendar, endMonth: C
 
     init {
         mMonthViewCallback = viewPager
-        mMinMonth = if (EventsCalendarUtil.isPastDay(startMonth)) startMonth else Calendar.getInstance()
-        mMaxMonth = if (EventsCalendarUtil.isFutureDay(endMonth)) endMonth else Calendar.getInstance()
+        mMinMonth = if (EventsCalendarUtil.isPastDay(startMonth)) startMonth else Calendar.getInstance(Locale.FRANCE)
+        mMaxMonth = if (EventsCalendarUtil.isFutureDay(endMonth)) endMonth else Calendar.getInstance(Locale.FRANCE)
         mCount = EventsCalendarUtil.getMonthCount(mMinMonth, mMaxMonth)
         monthDatesGridLayoutsArray = arrayOfNulls(mCount)
         mMonthIterator = mMinMonth.clone() as Calendar

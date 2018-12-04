@@ -93,7 +93,7 @@ class MonthView : ViewGroup, DatesGridLayout.CallBack {
 
     private fun initMonthTitle() {
         mMonthTitleTextView = mLayoutInflater.inflate(R.layout.zmail_layout_month_title, null) as TextView
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance(Locale.FRANCE)
         calendar.set(mYear, mMonth, 1)
         mMonthTitleTextView.text = EventsCalendarUtil.getMonthString(calendar, EventsCalendarUtil.DISPLAY_STRING)
         mMonthTitleTextView.setTextColor(EventsCalendarUtil.primaryTextColor)
@@ -125,7 +125,7 @@ class MonthView : ViewGroup, DatesGridLayout.CallBack {
     private fun setWeekDayHeaderString(header: TextView, calendarConstant: Int) {
         header.setTextColor(EventsCalendarUtil.weekHeaderColor)
         if (EventsCalendarUtil.weekHeaderTypeface != null) header.typeface = EventsCalendarUtil.weekHeaderTypeface
-        val namesOfDays = DateFormatSymbols.getInstance().shortWeekdays
+        val namesOfDays = DateFormatSymbols.getInstance(Locale.FRANCE).shortWeekdays
         when (calendarConstant) {
             Calendar.SUNDAY -> header.text = namesOfDays[Calendar.SUNDAY].toUpperCase()
             Calendar.MONDAY -> header.text = namesOfDays[Calendar.MONDAY].toUpperCase()

@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.utils;
+package com.jmjsolution.solarup.model;
 
 import java.util.Date;
 

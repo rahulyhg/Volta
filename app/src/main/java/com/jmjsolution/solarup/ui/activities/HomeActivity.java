@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup;
+package com.jmjsolution.solarup.ui.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,8 +17,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.jmjsolution.solarup.R;
+import com.jmjsolution.solarup.utils.CalendarService;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +30,8 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.jmjsolution.solarup.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static com.jmjsolution.solarup.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_READ_CALENDAR;
+import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_READ_CALENDAR;
 
 public class HomeActivity extends AppCompatActivity{
 
@@ -50,9 +53,9 @@ public class HomeActivity extends AppCompatActivity{
 
         setCalendarHorizontal();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
             checkPermissions(MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
+        }*/
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PERMISSION_GRANTED) {
             checkPermissions(MY_PERMISSIONS_REQUEST_READ_CALENDAR, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
@@ -126,11 +129,11 @@ public class HomeActivity extends AppCompatActivity{
 
     private void setCalendarHorizontal(){
         /* starts before 1 month from now */
-        Calendar startDate = Calendar.getInstance();
+        Calendar startDate = Calendar.getInstance(Locale.FRANCE);
         startDate.add(Calendar.MONTH, -1);
 
         /* ends after 1 month from now */
-        Calendar endDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance(Locale.FRANCE);
         endDate.add(Calendar.MONTH, 1);
 
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)

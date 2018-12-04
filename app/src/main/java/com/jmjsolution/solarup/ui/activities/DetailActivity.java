@@ -1,6 +1,9 @@
-package com.jmjsolution.solarup;
+package com.jmjsolution.solarup.ui.activities;
 
+import android.accounts.AccountManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +11,24 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
+import com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment;
+import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
+import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
+import com.jmjsolution.solarup.utils.CalendarService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.jmjsolution.solarup.ui.fragments.SettingsFragment.ACCOUNT_CHOOSER;
+import static com.jmjsolution.solarup.utils.CalendarService.MY_PREFS_NAME;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -61,6 +71,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 startInfoCustomerFrag(mNewProjectWdw, 3);
             } else if(cardviewNumber == 3){
                 mReglagesWdw.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+                startSettingsFragment(mReglagesWdw, 4);
+            } else if (cardviewNumber == 4) {
             }
         }
 
@@ -99,6 +111,19 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         fragmentTransaction.commit();
     }
 
+    private void startSettingsFragment(CardView view, int cardviewNumber) {
+        view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        SettingsFragment settingsFragment = new SettingsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("cardviewNumber", cardviewNumber);
+        settingsFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.frameLayout, settingsFragment);
+        fragmentTransaction.commit();
+    }
+
+
+
     private void checkIfUserStillValid() {
         if(FirebaseAuth.getInstance() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().getCurrentUser().reload().addOnFailureListener(new OnFailureListener() {
@@ -135,12 +160,26 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (view == mReglagesWdw){
             resetDesign(mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mContactUsWdw, mInfosWdw);
+            startSettingsFragment(mReglagesWdw, 4);
         }
         if (view == mContactUsWdw) {
             resetDesign(mContactUsWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mInfosWdw);
         }
         if (view == mInfosWdw) {
             resetDesign(mInfosWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mContactUsWdw);
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ACCOUNT_CHOOSER){
+            String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("email", name).apply();
+            CalendarService.syncCalendars(this);
         }
     }
 

@@ -4,12 +4,12 @@ import android.graphics.Typeface
 import android.text.format.DateFormat
 import android.util.Log
 import android.util.MonthDisplayHelper
-import android.view.View
+import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
-import kotlin.properties.Delegates
 
 object EventsCalendarUtil {
     const val WEEK_MODE = 0
@@ -23,13 +23,13 @@ object EventsCalendarUtil {
     const val MM_DD_YYYY = 30
     const val DISPLAY_STRING = 200
     const val YYYY_MM = 100
-    var today: Calendar = Calendar.getInstance()
+    var today: Calendar = Calendar.getInstance(Locale.FRANCE)
 
     var SELECTION_MODE = 0
 
     var currentMode = MONTH_MODE
     var weekStartDay = Calendar.MONDAY
-    private var currentSelectedDate: Calendar = Calendar.getInstance()
+    private var currentSelectedDate: Calendar = Calendar.getInstance(Locale.FRANCE)
     var tobeSelectedDate = 1
     const val DEFAULT_NO_OF_MONTHS = 480
     var primaryTextColor: Int = 0
@@ -42,7 +42,7 @@ object EventsCalendarUtil {
     var eventDotColor: Int = 0
     var monthTitleColor: Int = 0
     var weekHeaderColor: Int = 0
-    var selectedDate = Calendar.getInstance()
+    var selectedDate = Calendar.getInstance(Locale.FRANCE)
     var monthPos = 0
     var datesTypeface: Typeface? = null
     var monthTitleTypeface: Typeface? = null
@@ -158,7 +158,7 @@ object EventsCalendarUtil {
         var finished = false
         var noOfWeeks = 0
         var offsetForPreviousMonth: Int
-        val month = Calendar.getInstance()
+        val month = Calendar.getInstance(Locale.FRANCE)
         while (!finished) {
             offsetForPreviousMonth = Math.ceil(((helper.offset + helper.numberOfDaysInMonth).toFloat() / 7.0f).toDouble()).toInt()
             noOfWeeks += offsetForPreviousMonth
@@ -202,7 +202,7 @@ object EventsCalendarUtil {
     fun getCurrentSelectedDate(): Calendar? = currentSelectedDate
 
     fun getCalendar(dateStr: String, format: Int): Calendar {
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance(Locale.FRANCE)
         val year: Int
         val month: Int
         val date: Int
@@ -221,10 +221,11 @@ object EventsCalendarUtil {
                 calendar.set(year, month, date)
                 return calendar
             }
-            else -> return Calendar.getInstance()
+            else -> return Calendar.getInstance(Locale.FRANCE)
         }
     }
 
+    @JvmStatic
     fun getDateString(calendar: Calendar?, format: Int): String {
         val buffer = StringBuffer()
         if (calendar != null) {
@@ -264,17 +265,20 @@ object EventsCalendarUtil {
 
     fun getMonthString(monthCalendar: Calendar, format: Int): String? {
         val buffer = StringBuffer()
+        val month = monthCalendar.get(Calendar.MONTH) + 1
+        val d = SimpleDateFormat("MMMM yyyy", Locale.FRANCE)
         return when (format) {
             YYYY_MM -> {
                 buffer.append(monthCalendar.get(Calendar.YEAR))
                 buffer.append("/")
-                val month = monthCalendar.get(Calendar.MONTH) + 1
                 if (month < 10) buffer.append("0")
                 buffer.append(month)
                 buffer.toString()
             }
-            DISPLAY_STRING -> DateFormat.format("MMMM yyyy", monthCalendar) as String
+            DISPLAY_STRING -> (d.format(monthCalendar.time) as String).capitalize()
             else -> null
         }
     }
+
+
 }

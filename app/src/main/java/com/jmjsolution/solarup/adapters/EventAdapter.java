@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jmjsolution.solarup.R;
-import com.jmjsolution.solarup.utils.CalendarEvent;
+import com.jmjsolution.solarup.model.CalendarEvent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHodler> {
@@ -18,6 +19,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
     private final Context mContext;
     private final ArrayList<CalendarEvent> mEvents;
+    private ArrayList<CalendarEvent> mEventsSorted = new ArrayList<>();
 
     public EventAdapter(Context context, ArrayList<CalendarEvent> events){
         mContext = context;
@@ -41,6 +43,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
         return mEvents.size();
     }
 
+    public ArrayList<CalendarEvent> selectDate(String timeStamp) {
+        mEventsSorted.clear();
+        for(CalendarEvent event : mEvents){
+            String timeStampToCompare = new SimpleDateFormat("YYYY/MM/dd").format(event.getBegin());
+            if(timeStamp.equalsIgnoreCase(timeStampToCompare)){
+                mEventsSorted.add(event);
+            }
+        }
+
+        return mEventsSorted;
+
+    }
+
     public class EventViewHodler extends RecyclerView.ViewHolder {
 
         private TextView mTitleTv, mDateTv, mAddressTv, mBigDateTv;
@@ -55,9 +70,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
         }
 
         public void bindEvent(CalendarEvent event) {
+            String timeStamp = new SimpleDateFormat("dd/MM").format(event.getBegin());
+            String timestamp = new SimpleDateFormat("dd MMM YYYY").format(event.getBegin());
             mTitleTv.setText(event.getTitle());
-            mBigDateTv.setText("08/10");
-            mDateTv.setText("Mer 08 Nov - 13h00");
+            mBigDateTv.setText(timeStamp);
+            mDateTv.setText(timestamp);
             mAddressTv.setText("68 chemin du vallon de Toulouse");
         }
     }

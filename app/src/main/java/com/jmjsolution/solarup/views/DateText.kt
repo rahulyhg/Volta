@@ -83,7 +83,7 @@ class DateText : View {
         mDefStyleAttr = defStyleAttr
         mDefStyleRes = defStyleRes
         this.isClickable = true
-        mDate = Calendar.getInstance()
+        mDate = Calendar.getInstance(Locale.FRANCE)
         mDotRadius = resources.getDimension(R.dimen.radius_event_dot)
 
         val attributes = mContext.theme.obtainStyledAttributes(attrs, R.styleable.DateText, defStyleAttr, defStyleRes)

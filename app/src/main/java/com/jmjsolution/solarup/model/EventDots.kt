@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.utils
+package com.jmjsolution.solarup.model
 
 import android.util.MonthDisplayHelper
 import android.util.SparseBooleanArray

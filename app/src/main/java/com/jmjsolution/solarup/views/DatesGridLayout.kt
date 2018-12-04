@@ -6,14 +6,13 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.util.MonthDisplayHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jmjsolution.solarup.R
-import com.jmjsolution.solarup.utils.EventDots
-import com.jmjsolution.solarup.utils.Events
+import com.jmjsolution.solarup.model.EventDots
+import com.jmjsolution.solarup.model.Events
 import com.jmjsolution.solarup.utils.EventsCalendarUtil
 import java.util.*
 import kotlin.collections.ArrayList
@@ -90,7 +89,7 @@ class DatesGridLayout : ViewGroup, DateText.DateSelectListener {
         mDefStyleRes = defStyleRes
         mLayoutInflater = LayoutInflater.from(mContext)
         isClickable = true
-        mCurrentCalendar = Calendar.getInstance()
+        mCurrentCalendar = Calendar.getInstance(Locale.FRANCE)
         mCurrentCalendar.set(Calendar.DATE, 1)
         if (doGetAttributes) getAttributeValues()
         setCalendarProperties()
@@ -159,7 +158,7 @@ class DatesGridLayout : ViewGroup, DateText.DateSelectListener {
 
             hasEvent = dotsData != null && dotsData.hasEvent(mCurrentCalendar.get(Calendar.DATE))
 
-            isPast = mCurrentCalendar.timeInMillis <= Calendar.getInstance().timeInMillis - 86400000
+            isPast = mCurrentCalendar.timeInMillis <= Calendar.getInstance(Locale.FRANCE).timeInMillis - 86400000
 
             try {
                 for (c in EventsCalendarUtil.disabledDates) {

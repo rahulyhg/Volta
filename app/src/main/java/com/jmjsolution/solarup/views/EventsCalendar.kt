@@ -15,8 +15,8 @@ import android.view.View
 import com.jmjsolution.solarup.R
 import com.jmjsolution.solarup.adapters.MonthsAdapter
 import com.jmjsolution.solarup.adapters.WeeksAdapter
-import com.jmjsolution.solarup.utils.EventDots
-import com.jmjsolution.solarup.utils.Events
+import com.jmjsolution.solarup.model.EventDots
+import com.jmjsolution.solarup.model.Events
 import com.jmjsolution.solarup.utils.EventsCalendarUtil
 import java.util.*
 import kotlin.collections.ArrayList
@@ -83,14 +83,14 @@ class EventsCalendar : ViewPager, MonthView.Callback {
         }
 
         EventsCalendarUtil.currentMode = EventsCalendarUtil.MONTH_MODE
-        EventsCalendarUtil.setCurrentSelectedDate(Calendar.getInstance())
+        EventsCalendarUtil.setCurrentSelectedDate(Calendar.getInstance(Locale.FRANCE))
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        var startMonth = Calendar.getInstance()
-        var endMonth = Calendar.getInstance()
+        var startMonth = Calendar.getInstance(Locale.FRANCE)
+        var endMonth = Calendar.getInstance(Locale.FRANCE)
         if (mCallback != null) {
             startMonth = mMinMonth
             endMonth = mMaxMonth

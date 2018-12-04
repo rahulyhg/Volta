@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup;
+package com.jmjsolution.solarup.ui.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -17,10 +17,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.jmjsolution.solarup.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

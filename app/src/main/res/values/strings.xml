@@ -50,4 +50,6 @@
     <string name="saturday">SAT</string>
     <string name="etude_technique">Etude Technique</string>
     <string name="mon_agenda">Mon Agenda</string>
+    <string name="email_professionel">Email Professionel</string>
+    <string name="configurer_mon_compte">Configurer mon compte.</string>
 </resources>

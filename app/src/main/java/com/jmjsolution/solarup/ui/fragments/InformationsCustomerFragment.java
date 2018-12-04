@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup;
+package com.jmjsolution.solarup.ui.fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
 import com.jmjsolution.solarup.utils.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
