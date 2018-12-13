@@ -1,5 +1,6 @@
 package com.jmjsolution.solarup.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jmjsolution.solarup.R;
+import com.jmjsolution.solarup.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +30,12 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.jmjsolution.solarup.utils.Constants.Database.CONNEXION_DATE;
+import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_LOGGIN;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
+import static com.jmjsolution.solarup.utils.Constants.Database.UID;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -61,14 +69,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signIn(final String email, final String password) {
 
-        mDatabase.collection("users").document(email).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mDatabase.collection(ROOT).document(email).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                 if(task.getResult() != null && task.getResult().getData() != null) {
-                    boolean keyExists = task.getResult().getData().containsKey("user_is_enabled");
+                    boolean keyExists = task.getResult().getData().containsKey(IS_ENABLED_USER);
                     if(keyExists) {
-                        long status = (long) task.getResult().get("user_is_enabled");
+                        long status = (long) task.getResult().get(IS_ENABLED_USER);
                         if(status == 1){
                             Toast.makeText(LoginActivity.this, "This is user is currently active.", Toast.LENGTH_SHORT).show();
                         } else if(status == 2){
@@ -80,16 +88,16 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
 
                                         Map<String, Object> user = new HashMap<>();
-                                        user.put("email", mAuth.getCurrentUser().getEmail());
-                                        user.put("uid", mAuth.getCurrentUser().getUid());
-                                        user.put("user_is_enabled", 1);
+                                        user.put(EMAIL_LOGGIN, mAuth.getCurrentUser().getEmail());
+                                        user.put(UID, mAuth.getCurrentUser().getUid());
+                                        user.put(IS_ENABLED_USER, 1);
 
-                                        mDatabase.collection("users").document(email).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        mDatabase.collection(ROOT).document(email).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 mProgressBar.setVisibility(View.INVISIBLE);
                                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                                intent.putExtra("email", email);
+                                                intent.putExtra(EMAIL_LOGGIN, email);
                                                 startActivity(intent);
                                                 finish();
                                             }
@@ -121,22 +129,22 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                                 Date netDate = (new Date(System.currentTimeMillis()));
                                 String date = sdf.format(netDate);
 
                                 Map<String, Object> user = new HashMap<>();
-                                user.put("email", mAuth.getCurrentUser().getEmail());
-                                user.put("uid", mAuth.getCurrentUser().getUid());
-                                user.put("date_connexion", date);
-                                user.put("user_is_enabled", 1);
+                                user.put(EMAIL_LOGGIN, mAuth.getCurrentUser().getEmail());
+                                user.put(UID, mAuth.getCurrentUser().getUid());
+                                user.put(CONNEXION_DATE, date);
+                                user.put(IS_ENABLED_USER, 1);
 
-                                mDatabase.collection("users").document(email).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                mDatabase.collection(ROOT).document(email).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         mProgressBar.setVisibility(View.INVISIBLE);
                                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                        intent.putExtra("email", email);
+                                        intent.putExtra(EMAIL_LOGGIN, email);
                                         startActivity(intent);
                                         finish();
                                     }
@@ -150,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {
                                 mProgressBar.setVisibility(View.INVISIBLE);
-                                Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
 
@@ -170,8 +177,6 @@ public class LoginActivity extends AppCompatActivity {
         if(mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();
-        } else {
-            Toast.makeText(this, "Veuillez vous identifiez.", Toast.LENGTH_SHORT).show();
         }
     }
 }

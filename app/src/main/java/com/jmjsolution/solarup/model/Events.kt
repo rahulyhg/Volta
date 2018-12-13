@@ -37,8 +37,7 @@ object Events {
         }
     }
 
-    fun add(date: String) {
-        val monthCalendar = EventsCalendarUtil.getCalendar(date, EventsCalendarUtil.YYYY_MM_DD)
+    fun add(date: String) { val monthCalendar = EventsCalendarUtil.getCalendar(date, EventsCalendarUtil.YYYY_MM_DD)
         val dots = mDotsMap[date.substring(0, 7)]
         dots?.add(monthCalendar.get(Calendar.DAY_OF_MONTH))
     }

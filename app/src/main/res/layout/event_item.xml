@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:layout_width="match_parent"
+<android.support.v7.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="8dp"
     android:transitionName="card_transition"
     android:id="@+id/card_item_calendar"
@@ -19,9 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:paddingStart="8dp"
-        android:paddingLeft="8dp"
         android:layout_gravity="center"
-        android:paddingRight="0dp"
         android:paddingEnd="0dp"
         app:srcCompat="@drawable/ic_fiber_manual_record_green_24dp"
         android:layout_weight="0.25"/>
@@ -43,6 +41,7 @@
         android:text="08/10"/>
 
     <LinearLayout
+        android:id="@+id/infosEventLyt"
         android:layout_margin="4dp"
         android:layout_gravity="center"
         android:gravity="center"
@@ -53,37 +52,50 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:padding="2dp"
             android:id="@+id/dateEventItem"
             android:textSize="16sp"
             android:textColor="@android:color/black"
-            android:text="mond. 17 Sept. 2017 17:00"
+            tools:text="mond. 17 Sept. 2017 17:00"
             android:fontFamily="sans-serif-smallcaps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
             android:id="@+id/titleEventItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="sans-serif-smallcaps"
             android:maxLines="1"
-            android:text="Le David Brasserie"
+            tools:text="Le David Brasserie"
             android:textColor="@android:color/black"
             android:textSize="16sp"/>
 
         <TextView
+            android:padding="2dp"
             android:id="@+id/addressEventItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="sans-serif-smallcaps"
             android:maxLines="1"
-            android:text="David Johnson, Eleanor Soraya, Luc"
+            tools:text="David Johnson, Eleanor Soraya, Luc"
             android:textColor="@android:color/black"
             android:textSize="16sp"/>
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/deleteEventIv"
+        android:paddingStart="0dp"
+        android:paddingEnd="8dp"
+        android:layout_width="0dp"
+        android:layout_weight="0.25"
+        android:src="@drawable/ic_delete_black_24dp"
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

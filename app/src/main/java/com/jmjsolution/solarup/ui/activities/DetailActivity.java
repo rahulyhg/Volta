@@ -1,34 +1,58 @@
 package com.jmjsolution.solarup.ui.activities;
 
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.InputType;
+import android.util.ArrayMap;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.jmjsolution.solarup.adapters.EventAdapter;
+import com.jmjsolution.solarup.ui.fragments.ContactUsFragment;
 import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
 import com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
+import com.jmjsolution.solarup.ui.fragments.ProjectsFragment;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 import com.jmjsolution.solarup.utils.CalendarService;
+import com.jmjsolution.solarup.utils.Utils;
+
+import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.jmjsolution.solarup.ui.fragments.SettingsFragment.ACCOUNT_CHOOSER;
 import static com.jmjsolution.solarup.utils.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_LOGGIN;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
+import static com.jmjsolution.solarup.utils.Constants.GMAIL;
+import static com.jmjsolution.solarup.utils.Constants.IS_PASSWORD_STORED;
+import static com.jmjsolution.solarup.utils.Constants.PASSWORD;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,7 +74,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
 
         mDatabase = FirebaseFirestore.getInstance();
-        mEmail = getIntent().getStringExtra("email");
+        mEmail = getIntent().getStringExtra(EMAIL_LOGGIN);
 
         mRealisationWdw.setOnClickListener(this);
         mProjectWdw.setOnClickListener(this);
@@ -66,13 +90,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             if(cardviewNumber == 0){
                 startAgendaFrag(mRealisationWdw ,cardviewNumber);
             } else if(cardviewNumber == 1){
-                startEmptyFrag(mProjectWdw, cardviewNumber);
+                startProjectsFragment(mProjectWdw, cardviewNumber);
             } else if(cardviewNumber == 2){
                 startInfoCustomerFrag(mNewProjectWdw, 3);
             } else if(cardviewNumber == 3){
-                mReglagesWdw.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
                 startSettingsFragment(mReglagesWdw, 4);
             } else if (cardviewNumber == 4) {
+                startContactUsFragment(mContactUsWdw, 5);
             }
         }
 
@@ -86,6 +110,28 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         bundle.putInt("cardviewNumber", cardviewNumber);
         emptyFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.frameLayout, emptyFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void startContactUsFragment(CardView view, int cardviewNumber) {
+        view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        ContactUsFragment contactUsFragment = new ContactUsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("cardviewNumber", cardviewNumber);
+        contactUsFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.frameLayout, contactUsFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void startProjectsFragment(CardView view, int cardviewNumber) {
+        view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        ProjectsFragment projectsFragment = new ProjectsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("cardviewNumber", cardviewNumber);
+        projectsFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.frameLayout, projectsFragment);
         fragmentTransaction.commit();
     }
 
@@ -130,7 +176,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof FirebaseAuthInvalidUserException) {
-                        mDatabase.collection("users").document(mEmail).update("user_is_enabled", 2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        mDatabase.collection(ROOT).document(mEmail).update(IS_ENABLED_USER, 2).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 startActivity(new Intent(DetailActivity.this, LoginActivity.class));
@@ -164,6 +210,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (view == mContactUsWdw) {
             resetDesign(mContactUsWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mInfosWdw);
+            startContactUsFragment(mContactUsWdw, 5);
         }
         if (view == mInfosWdw) {
             resetDesign(mInfosWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mContactUsWdw);
@@ -176,10 +223,59 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ACCOUNT_CHOOSER){
-            String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("email", name).apply();
-            CalendarService.syncCalendars(this);
+            if(data != null) {
+                final SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+
+                if(!getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getBoolean(IS_PASSWORD_STORED, false)
+                        || !Objects.requireNonNull(getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getString(GMAIL, null)).equalsIgnoreCase(name)){
+                    final EditText taskEditText = new EditText(this);
+                    taskEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    new AlertDialog.Builder(this)
+                            .setTitle(name)
+                            .setMessage("Entrez votre mot de passe Gmail")
+                            .setView(taskEditText)
+                            .setPositiveButton("Valider", new DialogInterface.OnClickListener() {
+                                @SuppressLint("SetJavaScriptEnabled")
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Map<String, Object> password = new ArrayMap<>();
+                                    password.put(PASSWORD, taskEditText.getText().toString());
+                                    mDatabase.collection(ROOT).document(mEmail).set(password)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(DetailActivity.this, "Veuillez autoriser l'accés aux applications moins sécurisées", Toast.LENGTH_LONG).show();
+
+                                            String url = "https://myaccount.google.com/lesssecureapps";
+                                            Intent i = new Intent(Intent.ACTION_VIEW);
+                                            i.setData(Uri.parse(url));
+                                            startActivity(i);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+
+
+                                }
+                            }).create().show();
+                }
+
+                // TODO : resolve clear events list after changing account
+            /*if(!name.equalsIgnoreCase(getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getString("email", null))){
+                EventAdapter.mEvents.clear();
+            }*/
+
+                editor.putString(GMAIL, name).apply();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frameLayout, new SettingsFragment())
+                        .commit();
+                CalendarService.syncCalendars(this);
+            }
         }
     }
 

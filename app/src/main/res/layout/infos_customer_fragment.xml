@@ -43,7 +43,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <RadioButton
+                        android:text="@string/socity"
+                        android:id="@+id/socityBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                     <RadioButton android:id="@+id/mrRbtn"
+                        android:layout_marginStart="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mr"/>

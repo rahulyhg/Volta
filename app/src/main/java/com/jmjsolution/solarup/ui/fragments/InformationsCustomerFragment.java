@@ -41,16 +41,41 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
+import com.jmjsolution.solarup.utils.Constants;
 import com.jmjsolution.solarup.utils.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
 import com.jmjsolution.solarup.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.jmjsolution.solarup.utils.Constants.Database.ADDRESS;
+import static com.jmjsolution.solarup.utils.Constants.Database.AZIMUTH;
+import static com.jmjsolution.solarup.utils.Constants.Database.CHAUFFAGE_EAU_TYPE;
+import static com.jmjsolution.solarup.utils.Constants.Database.CHAUFFAGE_TYPE;
+import static com.jmjsolution.solarup.utils.Constants.Database.CITY;
+import static com.jmjsolution.solarup.utils.Constants.Database.CONSOMMATION_ELECTRIQUE;
+import static com.jmjsolution.solarup.utils.Constants.Database.COUT_ELECTRIQUE;
+import static com.jmjsolution.solarup.utils.Constants.Database.DATE;
+import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL;
+import static com.jmjsolution.solarup.utils.Constants.Database.GENRE;
+import static com.jmjsolution.solarup.utils.Constants.Database.GRANDEUR_TOIT;
+import static com.jmjsolution.solarup.utils.Constants.Database.HAUTEUR_PLAFOND;
+import static com.jmjsolution.solarup.utils.Constants.Database.INCLINAISON;
+import static com.jmjsolution.solarup.utils.Constants.Database.LATITUDE;
+import static com.jmjsolution.solarup.utils.Constants.Database.LONGITUDE;
+import static com.jmjsolution.solarup.utils.Constants.Database.NOM;
+import static com.jmjsolution.solarup.utils.Constants.Database.PRENOM;
+import static com.jmjsolution.solarup.utils.Constants.Database.PROJECTS_BRANCH;
+import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
+import static com.jmjsolution.solarup.utils.Constants.Database.TELEPHONE;
 
 public class InformationsCustomerFragment extends Fragment implements UserLocationListener, View.OnClickListener, OnMapReadyCallback {
 
@@ -104,6 +129,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     @BindView(R.id.mrRbtn) RadioButton mMrBtn;
     @BindView(R.id.mmeRbtn) RadioButton mMmeBtn;
     @BindView(R.id.mlleRbtn) RadioButton mMlleBtn;
+    @BindView(R.id.socityBtn) RadioButton mSocityBtn;
 
     @Nullable
     @Override
@@ -138,6 +164,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
         mMrBtn.setOnClickListener(this);
         mMmeBtn.setOnClickListener(this);
         mMlleBtn.setOnClickListener(this);
+        mSocityBtn.setOnClickListener(this);
 
         return view;
 
@@ -322,42 +349,61 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
         }
         if (view == mMrBtn) {
             mGenre = 0;
+            mLastNameEt.setHint("Prénom");
+            mSocityBtn.setChecked(false);
             mMmeBtn.setChecked(false);
             mMlleBtn.setChecked(false);
         }
         if (view == mMmeBtn) {
             mGenre = 1;
+            mLastNameEt.setHint("Prénom");
+            mSocityBtn.setChecked(false);
             mMrBtn.setChecked(false);
             mMlleBtn.setChecked(false);
         }
         if (view == mMlleBtn) {
             mGenre = 2;
+            mLastNameEt.setHint("Prénom");
+            mSocityBtn.setChecked(false);
             mMmeBtn.setChecked(false);
             mMrBtn.setChecked(false);
+        }
+        if(view == mSocityBtn){
+            mGenre = 3;
+            mLastNameEt.setHint("N° Siret");
+            mMrBtn.setChecked(false);
+            mMmeBtn.setChecked(false);
+            mMlleBtn.setChecked(false);
+
         }
         if(view == mSubmitBtn){
             if(submitForm()){
                 Map<String, Object> infosCustomer = new ArrayMap<>();
-                infosCustomer.put("latitude", mLatLng.latitude);
-                infosCustomer.put("longitude", mLatLng.longitude);
-                infosCustomer.put("address", mAddressName);
-                infosCustomer.put("city", mCityName);
-                infosCustomer.put("chauffage_type", mChauffageType);
-                infosCustomer.put("chauffe_eau_type", mCEType);
-                infosCustomer.put("hauteur_plafond", mIntervalHauteurPlafond);
-                infosCustomer.put("grandeur_toit", mIntervalGrandeurToiture);
-                infosCustomer.put("conso_electrique", mConsoElectriqueEt.getText().toString());
-                infosCustomer.put("cout_electrique", mCoutElectriciteEt.getText().toString());
-                infosCustomer.put("inclinaison", mInclinaisonEt.getText().toString());
-                infosCustomer.put("azimuth", mAzimuthEt.getText().toString());
-                infosCustomer.put("prenom", mNameEt.getText().toString());
-                infosCustomer.put("nom", mLastNameEt.getText().toString());
-                infosCustomer.put("telephone", mPhoneEt.getText().toString());
-                infosCustomer.put("email", mEmailEt.getText().toString());
-                infosCustomer.put("genre", mGenre);
-                mDatabase.collection("users").document(mAuth.getCurrentUser().getEmail()).collection("projects").add(infosCustomer).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                infosCustomer.put(LATITUDE, mLatLng.latitude);
+                infosCustomer.put(LONGITUDE, mLatLng.longitude);
+                infosCustomer.put(ADDRESS, mAddressName);
+                infosCustomer.put(CITY, mCityName);
+                infosCustomer.put(CHAUFFAGE_TYPE, mChauffageType);
+                infosCustomer.put(CHAUFFAGE_EAU_TYPE, mCEType);
+                infosCustomer.put(HAUTEUR_PLAFOND, mIntervalHauteurPlafond);
+                infosCustomer.put(GRANDEUR_TOIT, mIntervalGrandeurToiture);
+                infosCustomer.put(CONSOMMATION_ELECTRIQUE, mConsoElectriqueEt.getText().toString());
+                infosCustomer.put(COUT_ELECTRIQUE, mCoutElectriciteEt.getText().toString());
+                infosCustomer.put(INCLINAISON, mInclinaisonEt.getText().toString());
+                infosCustomer.put(AZIMUTH, mAzimuthEt.getText().toString());
+                infosCustomer.put(PRENOM, mNameEt.getText().toString());
+                infosCustomer.put(NOM, mLastNameEt.getText().toString());
+                infosCustomer.put(TELEPHONE, mPhoneEt.getText().toString());
+                infosCustomer.put(EMAIL, mEmailEt.getText().toString());
+                infosCustomer.put(GENRE, mGenre);
+                infosCustomer.put(DATE, Calendar.getInstance(Locale.FRANCE).getTimeInMillis());
+                mDatabase.collection(ROOT)
+                        .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
+                        .collection(PROJECTS_BRANCH)
+                        .document(mNameEt.getText().toString())
+                        .set(infosCustomer).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         Toast.makeText(mContext, "succes to store info user", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -367,23 +413,6 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
                     }
                 });
             }
-        }
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.mrRbtn:
-                if (checked) mGenre = 0;
-                break;
-            case R.id.mmeRbtn:
-                if (checked) mGenre = 1;
-                break;
-            case R.id.mlleRbtn:
-                if (checked) mGenre = 1;
-                break;
         }
     }
 

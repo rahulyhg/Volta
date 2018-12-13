@@ -5,18 +5,24 @@ import java.util.Date;
 public class CalendarEvent implements Comparable<CalendarEvent>{
 
     private String title;
+    private String location;
     private Date begin, end;
     private boolean allDay;
+    private long id;
+    private int eventStatus;
 
     public CalendarEvent() {
 
     }
 
-    public CalendarEvent(String title, Date begin, Date end, boolean allDay) {
+    public CalendarEvent(String title, Date begin, Date end, boolean allDay, long id, String location, int eventStatus) {
         setTitle(title);
         setBegin(begin);
         setEnd(end);
         setAllDay(allDay);
+        setId(id);
+        setLocation(location);
+        setEventStatus(eventStatus);
     }
 
     public String getTitle() {
@@ -51,6 +57,30 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
         this.allDay = allDay;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public int getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(int eventStatus) {
+        this.eventStatus = eventStatus;
+    }
+
     @Override
     public String toString(){
         return getTitle() + " " + getBegin() + " " + getEnd() + " " + isAllDay();
@@ -61,5 +91,4 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
         // -1 = less, 0 = equal, 1 = greater
         return getBegin().compareTo(other.begin);
     }
-
 }

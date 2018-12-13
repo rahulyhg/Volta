@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
+import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,7 @@ import com.jmjsolution.solarup.utils.CalendarService;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +34,11 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_READ_CALENDAR;
+import static com.jmjsolution.solarup.ui.fragments.SettingsFragment.ACCOUNT_CHOOSER;
+import static com.jmjsolution.solarup.utils.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
+import static com.jmjsolution.solarup.utils.Constants.IS_EMAIL_LINKED;
 
 public class HomeActivity extends AppCompatActivity{
 
@@ -173,7 +180,7 @@ public class HomeActivity extends AppCompatActivity{
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof FirebaseAuthInvalidUserException) {
-                        mDatabase.collection("users").document(mEmail).update("user_is_enabled", 2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        mDatabase.collection(ROOT).document(mEmail).update(IS_ENABLED_USER, 2).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 startActivity(new Intent(HomeActivity.this, LoginActivity.class));

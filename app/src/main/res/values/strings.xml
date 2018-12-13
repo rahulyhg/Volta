@@ -50,6 +50,16 @@
     <string name="saturday">SAT</string>
     <string name="etude_technique">Etude Technique</string>
     <string name="mon_agenda">Mon Agenda</string>
-    <string name="email_professionel">Email Professionel</string>
+    <string name="email_professionel">Gmail Professionel</string>
     <string name="configurer_mon_compte">Configurer mon compte.</string>
+    <string name="no_event_planed">Aucun événement n\'est prévu..</string>
+    <string name="socity">Société</string>
+    <string name="enter_title_label">Entrer un titre</string>
+    <string name="valid">Valider</string>
+    <string name="cancel">Annuler</string>
+    <string name="enter_location_label">Entrer une localisation</string>
+    <string name="refuser">Refuser</string>
+    <string name="accepter">Accepter</string>
+    <string name="configure_email_professionel">Configurer mon compte Gmail</string>
+    <string name="one_account_allowed">Only one account allowed</string>
 </resources>
