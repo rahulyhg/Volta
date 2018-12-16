@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,14 +18,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jmjsolution.solarup.R;
-import com.jmjsolution.solarup.adapters.EventAdapter;
 import com.jmjsolution.solarup.adapters.ProjectAdapter;
 import com.jmjsolution.solarup.model.InfoCustomerModel;
 import com.jmjsolution.solarup.model.Project;
-import com.jmjsolution.solarup.utils.CalendarService;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -62,14 +59,21 @@ public class ProjectsFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        infoCustomerModels.add(document.toObject(InfoCustomerModel.class));
-                        projects.add(new Project(document.toObject(InfoCustomerModel.class).getNom(), document.toObject(InfoCustomerModel.class).getAddress(),
-                                document.toObject(InfoCustomerModel.class).getDateFormatted()));
-                        mProjectAdapter.notifyDataSetChanged();
+                        if(task.getResult() != null){
+                            infoCustomerModels.add(document.toObject(InfoCustomerModel.class));
+                            projects.add(new Project(document.toObject(InfoCustomerModel.class).getNom(), document.toObject(InfoCustomerModel.class).getAddress(),
+                                    document.toObject(InfoCustomerModel.class).getDateFormatted()));
+                            mProjectAdapter.notifyDataSetChanged();
+                        } else {
+                            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.frameLayout, new EmptyFragment())
+                                    .commit();
+                        }
                     }
 
-
-                } else { }
+                } else {
+                    Toast.makeText(getContext(), "Erreur, veuillez reessayer.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

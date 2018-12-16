@@ -1,9 +1,8 @@
-package com.jmjsolution.solarup.v2;
+package com.jmjsolution.solarup.services.emailService;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 
 import javax.mail.Message;

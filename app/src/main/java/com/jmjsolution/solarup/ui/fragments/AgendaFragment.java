@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.adapters.EventAdapter;
 import com.jmjsolution.solarup.model.CalendarEvent;
-import com.jmjsolution.solarup.utils.CalendarService;
+import com.jmjsolution.solarup.services.calendarService.CalendarService;
 import com.jmjsolution.solarup.views.EventsCalendar;
 
 import java.text.SimpleDateFormat;
@@ -42,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
-import static com.jmjsolution.solarup.utils.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
 import static com.jmjsolution.solarup.utils.Constants.IS_EMAIL_LINKED;
 
 public class AgendaFragment extends Fragment implements EventsCalendar.Callback {
@@ -113,8 +113,10 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback 
     @SuppressLint("SimpleDateFormat")
     public void onDaySelected(@Nullable Calendar selectedDate) {
         String timeStamp = new SimpleDateFormat("YYYY/MM/dd").format(Objects.requireNonNull(selectedDate).getTime());
-        String m = new SimpleDateFormat("YYYY/MM/dd").format(Calendar.getInstance().getTime());
-        if (timeStamp.equalsIgnoreCase(new SimpleDateFormat("YYYY/MM/dd").format(Calendar.getInstance().getTime())) && Objects.requireNonNull(getActivity()).getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).getBoolean("isEmailConfigured", false)) {
+        String tp = new SimpleDateFormat("YYYY/MM/dd").format(Calendar.getInstance().getTime());
+        boolean p = getActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).getBoolean("isEmailConfigured", false);
+        if (timeStamp.equalsIgnoreCase(new SimpleDateFormat("YYYY/MM/dd").format(Calendar.getInstance().getTime()))
+                && Objects.requireNonNull(getActivity()).getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).getBoolean(IS_EMAIL_LINKED, false)) {
             mConfigureCompteTv.setVisibility(View.GONE);
             mEventsRv.setVisibility(View.VISIBLE);
             mEventsRv.setAdapter(mEventAdapter);

@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.utils;
+package com.jmjsolution.solarup.services.calendarService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.text.format.DateUtils;
-import android.widget.Toast;
+
 import com.jmjsolution.solarup.model.CalendarEvent;
 
 import static android.content.Context.MODE_PRIVATE;

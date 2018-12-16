@@ -362,7 +362,7 @@
 
         <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
 
-            <com.jmjsolution.solarup.utils.SeekbarWithIntervals
+            <com.jmjsolution.solarup.views.SeekbarWithIntervals
                 android:id="@+id/seekBarWithIntervals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -552,7 +552,7 @@
 
         <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
 
-            <com.jmjsolution.solarup.utils.SeekbarWithIntervals
+            <com.jmjsolution.solarup.views.SeekbarWithIntervals
                 android:id="@+id/seekBarWithIntervalsToiture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -699,8 +699,9 @@
 
         <Button
             android:id="@+id/submitBtn"
+            android:padding="8dp"
             android:textSize="22sp"
-            android:text="@string/envoyer"
+            android:text="@string/continu"
             android:background="@drawable/layout_bg"
             android:layout_margin="24dp"
             android:layout_width="match_parent"

@@ -1,24 +1,45 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
+    android:orientation="vertical"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_weight="9"
+        android:layout_height="0dp">
+
+        <EditText
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/bodyEmailEt"
+            android:textSize="26sp"
+            android:gravity="top"
+            android:padding="24dp"
+            android:textColor="@android:color/black"
+            android:hint="@string/comment_pouvons_nous_vous_aider"
+            android:background="@drawable/layout_bg"/>
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/contactUsPb"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
 
     <Button
-
+        android:layout_margin="16dp"
         android:id="@+id/send"
-
-        android:layout_width="150dp"
-
-        android:layout_height="70dp"
-
-        android:layout_centerInParent="true"
-
-        android:text="Send Mail" />
+        android:layout_width="match_parent"
+        android:layout_weight="0.75"
+        android:layout_height="0dp"
+        android:textColor="@android:color/black"
+        android:background="@drawable/layout_bg"
+        android:text="@string/send_mail" />
 
 
 
-</RelativeLayout>
+</LinearLayout>

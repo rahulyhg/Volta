@@ -62,4 +62,9 @@
     <string name="accepter">Accepter</string>
     <string name="configure_email_professionel">Configurer mon compte Gmail</string>
     <string name="one_account_allowed">Only one account allowed</string>
+    <string name="send_mail">Send Mail</string>
+    <string name="comment_pouvons_nous_vous_aider">Comment pouvons nous vous aider ?</string>
+    <string name="associer_compte_empty_frag">Associez votre compte gmail afin de pouvoir nous contacter.</string>
+    <string name="no_project_empty_frag">Vous n\'avez pas encore de projet...</string>
+    <string name="continu">continuer</string>
 </resources>

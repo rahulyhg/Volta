@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.v2;
+package com.jmjsolution.solarup.services.emailService;
 import java.security.AccessController;
 
 import java.security.Provider;

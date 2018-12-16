@@ -3,6 +3,7 @@ package com.jmjsolution.solarup.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.AccountPicker;
 import com.jmjsolution.solarup.R;
-import com.jmjsolution.solarup.utils.CalendarService;
+import com.jmjsolution.solarup.services.calendarService.CalendarService;
 
 import java.util.Objects;
 
@@ -78,9 +78,9 @@ public class SettingsFragment extends Fragment {
         super.onResume();
         mSharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
         if(mSharedPreferences.getBoolean(IS_EMAIL_LINKED, false) && mSharedPreferences.getBoolean(IS_PASSWORD_STORED, false)){
-            mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary), android.graphics.PorterDuff.Mode.MULTIPLY);
+            mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
         } else {
-            mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.transparent), android.graphics.PorterDuff.Mode.SRC_IN);
+            mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.MULTIPLY);
         }
     }
 }

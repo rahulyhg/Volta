@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.utils;
+package com.jmjsolution.solarup.views;
 
 import android.app.Activity;
 import android.content.Context;
