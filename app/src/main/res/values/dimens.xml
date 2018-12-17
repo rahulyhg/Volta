@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="seekbar_thumb_width">25dp</dimen>
+    <dimen name="seekbar_thumb_width">26dp</dimen>
 
         <dimen name="height_month_title">40dp</dimen>
         <dimen name="height_week_day_header">32dp</dimen>

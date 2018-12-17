@@ -39,6 +39,9 @@ public class Constants {
         public static final String EMAIL = "email";
         public static final String GENRE = "genre";
         public static final String DATE = "date";
+        public static final String PERGOLA_CHOICE = "choix_pergola";
+        public static final String PERGOLA_FIXATION = "choix_fixation_pergola";
+        public static final String PERSPECTIVE = "perspective";
 
 
     }

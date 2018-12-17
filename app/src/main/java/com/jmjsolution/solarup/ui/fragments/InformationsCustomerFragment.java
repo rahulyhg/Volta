@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
+import com.jmjsolution.solarup.model.Step;
+import com.jmjsolution.solarup.views.HorizontalStepView;
 import com.jmjsolution.solarup.views.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
 import com.jmjsolution.solarup.utils.Utils;
@@ -69,6 +72,9 @@ import static com.jmjsolution.solarup.utils.Constants.Database.INCLINAISON;
 import static com.jmjsolution.solarup.utils.Constants.Database.LATITUDE;
 import static com.jmjsolution.solarup.utils.Constants.Database.LONGITUDE;
 import static com.jmjsolution.solarup.utils.Constants.Database.NOM;
+import static com.jmjsolution.solarup.utils.Constants.Database.PERGOLA_CHOICE;
+import static com.jmjsolution.solarup.utils.Constants.Database.PERGOLA_FIXATION;
+import static com.jmjsolution.solarup.utils.Constants.Database.PERSPECTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.PRENOM;
 import static com.jmjsolution.solarup.utils.Constants.Database.PROJECTS_BRANCH;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
@@ -94,6 +100,9 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     private int mIntervalHauteurPlafond = -1;
     private int mIntervalGrandeurToiture = -1;
     private int mGenre = -1;
+    private int mPergolaChoice = -1;
+    private int mFixationChoice = -1;
+    private int mPerspective = -1;
 
     @BindView(R.id.placeCityTv) TextView mPlaceCityTv;
     @BindView(R.id.placeAddressTv) TextView mAddressTv;
@@ -127,6 +136,13 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     @BindView(R.id.mmeRbtn) RadioButton mMmeBtn;
     @BindView(R.id.mlleRbtn) RadioButton mMlleBtn;
     @BindView(R.id.socityBtn) RadioButton mSocityBtn;
+    @BindView(R.id.fixationDeuxRb) RadioButton mFixationDeuxPiedsBtn;
+    @BindView(R.id.fixationQuatreRb) RadioButton mFixationQuatrePiedsBtn;
+    @BindView(R.id.seekBarWithIntervalsPergola) SeekbarWithIntervals mSeekbarWithIntervalsPergola;
+    @BindView(R.id.augmenterPouvoirAchatTv) TextView mAugmentationPvrAchatTv;
+    @BindView(R.id.transfertChargesTV) TextView mTransfertChargesTv;
+    @BindView(R.id.independantTv) TextView mIndependantTv;
+    @BindView(R.id.verticalStepview) HorizontalStepView mVerticalStepView;
 
     @Nullable
     @Override
@@ -142,8 +158,31 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
 
         checkPermissions();
 
+        List<Step> stepBeans = new ArrayList<>();
+        stepBeans.add(new Step("Etude Technique", Step.State.CURRENT));
+        stepBeans.add(new Step("Choix de l'offre", Step.State.CURRENT));
+        stepBeans.add(new Step("Bon de commande", Step.State.COMPLETED));
+        stepBeans.add(new Step("Eligibilite", Step.State.NOT_COMPLETED));
+        stepBeans.add(new Step("Photos", Step.State.CURRENT));
+        stepBeans.add(new Step("Finalisation", Step.State.CURRENT));
+        mVerticalStepView
+                .setSteps(stepBeans)
+                .setCompletedStepTextColor(getResources().getColor(R.color.colorAccent)) // Default: Color.WHITE
+                .setNotCompletedStepTextColor(getResources().getColor(R.color.colorPrimary)) // Default: Color.WHITE
+                .setCurrentStepTextColor(Color.BLACK) // Default: Color.WHITE
+                // Line colors
+                .setCompletedLineColor(getResources().getColor(R.color.colorPrimaryLight)) // Default: Color.WHITE
+                .setNotCompletedLineColor(getResources().getColor(R.color.colorPrimaryDark)) // Default: Color.WHITE
+                // Text size (in sp)
+                .setTextSize(12) // Default: 14sp
+                // Drawable radius (in dp)
+                .setCircleRadius(14) // Default: ~11.2dp
+                // Length of lines separating steps (in dp)
+                .setLineLength(70); // Default: ~34dp
+
         setSeekbarHauteurPlafond();
         setSeekbarGrandeurToiture();
+        setSeekbarPergola();
 
         mSearchAddressBtn.setOnClickListener(this);
         mEditAddressBtn.setOnClickListener(this);
@@ -162,9 +201,39 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
         mMmeBtn.setOnClickListener(this);
         mMlleBtn.setOnClickListener(this);
         mSocityBtn.setOnClickListener(this);
+        mFixationDeuxPiedsBtn.setOnClickListener(this);
+        mFixationQuatrePiedsBtn.setOnClickListener(this);
+        mAugmentationPvrAchatTv.setOnClickListener(this);
+        mTransfertChargesTv.setOnClickListener(this);
+        mIndependantTv.setOnClickListener(this);
 
         return view;
 
+    }
+
+    private void setSeekbarPergola() {
+        List<String> intervals = new ArrayList<>();
+        intervals.add("1.2kW \n 8m²");
+        intervals.add("2.4kW \n 16m²");
+        intervals.add("2.7kW \n 18m²");
+        intervals.add("3.6kW \n 24m²");
+        mSeekbarWithIntervalsPergola.setIntervals(intervals);
+        mSeekbarWithIntervalsPergola.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                mPergolaChoice = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setSeekbarHauteurPlafond() {
@@ -373,6 +442,26 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
             mMlleBtn.setChecked(false);
 
         }
+        if(view == mFixationDeuxPiedsBtn){
+            mFixationChoice = 2;
+            mFixationQuatrePiedsBtn.setChecked(false);
+        }
+        if(view == mFixationQuatrePiedsBtn){
+            mFixationChoice = 4;
+            mFixationDeuxPiedsBtn.setChecked(false);
+        }
+        if(view == mAugmentationPvrAchatTv){
+            mPerspective = 0;
+            setPerspective(mAugmentationPvrAchatTv, mTransfertChargesTv, mIndependantTv);
+        }
+        if(view == mTransfertChargesTv){
+            mPerspective = 1;
+            setPerspective(mTransfertChargesTv, mAugmentationPvrAchatTv, mIndependantTv);
+        }
+        if(view == mIndependantTv){
+            mPerspective = 2;
+            setPerspective(mIndependantTv, mAugmentationPvrAchatTv, mTransfertChargesTv);
+        }
         if(view == mSubmitBtn){
             if(submitForm()){
                 Map<String, Object> infosCustomer = new ArrayMap<>();
@@ -393,6 +482,9 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
                 infosCustomer.put(TELEPHONE, mPhoneEt.getText().toString());
                 infosCustomer.put(EMAIL, mEmailEt.getText().toString());
                 infosCustomer.put(GENRE, mGenre);
+                infosCustomer.put(PERGOLA_CHOICE, mPergolaChoice);
+                infosCustomer.put(PERGOLA_FIXATION, mFixationChoice);
+                infosCustomer.put(PERSPECTIVE, mPerspective);
                 infosCustomer.put(DATE, Calendar.getInstance(Locale.FRANCE).getTimeInMillis());
                 mDatabase.collection(ROOT)
                         .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
@@ -470,6 +562,12 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     }
 
     private void setChauffeEauType(TextView tv, TextView tv1, TextView tv2) {
+        tv.setBackground(getResources().getDrawable(R.drawable.rounded_shape_yellow_stroke));
+        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
+        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
+    }
+
+    private void setPerspective(TextView tv, TextView tv1, TextView tv2) {
         tv.setBackground(getResources().getDrawable(R.drawable.rounded_shape_yellow_stroke));
         tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
         tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));

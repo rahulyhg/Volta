@@ -67,4 +67,11 @@
     <string name="associer_compte_empty_frag">Associez votre compte gmail afin de pouvoir nous contacter.</string>
     <string name="no_project_empty_frag">Vous n\'avez pas encore de projet...</string>
     <string name="continu">continuer</string>
+    <string name="pergola">Pergola</string>
+    <string name="_2_pieds_de_fixation">2 pieds de fixation</string>
+    <string name="_4_pieds_de_fixation">4 pieds de fixation</string>
+    <string name="la_perspective">La perspective</string>
+    <string name="augmenter_mon_pouvoir_d_achat">Augmenter mon pouvoir d\'achat</string>
+    <string name="transferer_mes_charges">Transferer mes charges</string>
+    <string name="devenir_independant_au_plus_vite">Devenir independant au plus vite</string>
 </resources>

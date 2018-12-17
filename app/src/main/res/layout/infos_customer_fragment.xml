@@ -12,6 +12,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.jmjsolution.solarup.views.HorizontalStepView
+            android:layout_margin="16dp"
+            android:id="@+id/verticalStepview"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <TextView
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
@@ -24,11 +31,9 @@
             android:layout_height="wrap_content"
             android:text="@string/etude_technique" />
 
-
         <TextView
             style="@style/TextViewLabelCategory"
             android:text="@string/informations_de_base" />
-
 
         <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
 
@@ -134,7 +139,6 @@
 
 
         </android.support.v7.widget.CardView>
-
 
         <TextView
             style="@style/TextViewLabelCategory"
@@ -663,6 +667,59 @@
 
         </LinearLayout>
 
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/pergola"/>
+
+        <android.support.v7.widget.CardView
+            style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.jmjsolution.solarup.views.SeekbarWithIntervals
+                    android:id="@+id/seekBarWithIntervalsPergola"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="24dp" />
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:textSize="22sp"
+                        android:gravity="center"
+                        android:id="@+id/fixationDeuxRb"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/_2_pieds_de_fixation" />
+
+                    <RadioButton
+                        android:textSize="22sp"
+                        android:gravity="center"
+                        android:id="@+id/fixationQuatreRb"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:foregroundGravity="center"
+                        android:text="@string/_4_pieds_de_fixation" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
 
         <TextView
             style="@style/TextViewLabelCategory"
@@ -691,6 +748,41 @@
                     style="@style/TextViewEauChaudeSanitaire"
                     android:layout_marginBottom="16dp"
                     android:text="@string/chauffe_eau_thermodynamique" />
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/la_perspective" />
+
+
+
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/augmenterPouvoirAchatTv"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:text="@string/augmenter_mon_pouvoir_d_achat" />
+
+
+                <TextView
+                    android:id="@+id/transfertChargesTV"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:text="@string/transferer_mes_charges" />
+
+                <TextView
+                    android:id="@+id/independantTv"
+                    style="@style/TextViewEauChaudeSanitaire"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/devenir_independant_au_plus_vite" />
 
 
             </LinearLayout>
