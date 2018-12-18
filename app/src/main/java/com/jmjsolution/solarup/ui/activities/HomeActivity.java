@@ -80,7 +80,7 @@ public class HomeActivity extends AppCompatActivity{
         mNewProjectWdw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                transitionIntent(2);
+                startInfoCustomerActivity();
             }
         });
         mReglagesWdw.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +103,11 @@ public class HomeActivity extends AppCompatActivity{
         });
 
     }
+
+    private void startInfoCustomerActivity(){
+        startActivity(new Intent(this, ProcessActivity.class));
+    }
+
 
     private void checkPermissions(int callbackId, String... permissionsId) {
         boolean permissions = true;
@@ -139,6 +144,10 @@ public class HomeActivity extends AppCompatActivity{
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
                 .range(startDate, endDate)
                 .datesNumberOnScreen(5)
+                .configure()
+                    .showBottomText(false)
+                    .formatTopText("MMM")
+                .end()
                 .build();
 
         horizontalCalendar.goToday(true);

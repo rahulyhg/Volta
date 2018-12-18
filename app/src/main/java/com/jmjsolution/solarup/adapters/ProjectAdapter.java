@@ -63,6 +63,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         public void bindProject(int i) {
             mTitleTv.setText(mProjects.get(i).getTitle());
             mAddressTv.setText(mProjects.get(i).getLocation());
+            mBigDateTv.setText(mProjects.get(i).getBigDate());
+            mDateTv.setText(mProjects.get(i).getDate());
         }
     }
 }

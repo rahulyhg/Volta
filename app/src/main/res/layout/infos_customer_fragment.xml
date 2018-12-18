@@ -12,13 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.jmjsolution.solarup.views.HorizontalStepView
-            android:layout_margin="16dp"
-            android:id="@+id/verticalStepview"
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
         <TextView
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
@@ -30,6 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/etude_technique" />
+
+
 
         <TextView
             style="@style/TextViewLabelCategory"
@@ -139,6 +134,8 @@
 
 
         </android.support.v7.widget.CardView>
+
+
 
         <TextView
             style="@style/TextViewLabelCategory"
@@ -256,6 +253,8 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -360,11 +359,15 @@
 
     </LinearLayout>
 
+
+
         <TextView
+            android:id="@+id/hauteurSousPlafondLabel"
             style="@style/TextViewLabelCategory"
             android:text="@string/hauteur_sous_plafond" />
 
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
+            android:id="@+id/hauteurSousPlafondCv">
 
             <com.jmjsolution.solarup.views.SeekbarWithIntervals
                 android:id="@+id/seekBarWithIntervals"
@@ -375,11 +378,15 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <TextView
+            android:id="@+id/typeChauffageLabel"
             style="@style/TextViewLabelCategory"
             android:text="@string/type_de_chauffage" />
 
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
+            android:id="@+id/typeChauffageCv">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -550,11 +557,16 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <TextView
+            android:id="@+id/surfaceToitureLabel"
             style="@style/TextViewLabelCategory"
             android:text="@string/surface_de_la_toiture" />
 
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView
+            android:id="@+id/surfaceToitureCv"
+            style="@style/CardViewInfoCustomer">
 
             <com.jmjsolution.solarup.views.SeekbarWithIntervals
                 android:id="@+id/seekBarWithIntervalsToiture"
@@ -565,7 +577,10 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <LinearLayout
+            android:id="@+id/inclinaisonAzimuthLyt"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -667,11 +682,15 @@
 
         </LinearLayout>
 
+
+
         <TextView
+            android:id="@+id/pergolaLabel"
             style="@style/TextViewLabelCategory"
             android:text="@string/pergola"/>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/pergolaCv"
             style="@style/CardViewInfoCustomer">
 
             <LinearLayout
@@ -679,15 +698,82 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.jmjsolution.solarup.views.SeekbarWithIntervals
-                    android:id="@+id/seekBarWithIntervalsPergola"
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:gravity="center"
+                        android:background="@drawable/rounded_shape_black_stroke"
+                        android:id="@+id/pergola8"
+                        android:layout_width="0dp"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_1_2kw_n_8m" />
+
+
+                    <TextView
+                        android:gravity="center"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/rounded_shape_black_stroke"
+                        android:id="@+id/pergola16"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/black"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_2_4kw_n_16m" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:gravity="center"
+                        android:background="@drawable/rounded_shape_black_stroke"
+                        android:layout_width="0dp"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pergola18"
+                        android:text="@string/_2_7kw_n_18m" />
+
+
+                    <TextView
+                        android:gravity="center"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/rounded_shape_black_stroke"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/black"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pergola24"
+                        android:text="@string/_3_6kw_n_24m" />
+
+                </LinearLayout>
 
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginBottom="24dp"
@@ -721,11 +807,14 @@
         </android.support.v7.widget.CardView>
 
 
+
         <TextView
+            android:id="@+id/eauChaudeSanitaireLabel"
             style="@style/TextViewLabelCategory"
             android:text="@string/eau_chaude_sanitaire" />
 
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
+            android:id="@+id/eauChaudeSanitaireCv">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -754,11 +843,11 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <TextView
             style="@style/TextViewLabelCategory"
             android:text="@string/la_perspective" />
-
-
 
         <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
 
@@ -789,6 +878,8 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <Button
             android:id="@+id/submitBtn"
             android:padding="8dp"
@@ -798,7 +889,6 @@
             android:layout_margin="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
 
     </LinearLayout>
 

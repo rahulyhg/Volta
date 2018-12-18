@@ -1,10 +1,10 @@
 package com.jmjsolution.solarup.ui.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
@@ -34,14 +35,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jmjsolution.solarup.R;
+import com.jmjsolution.solarup.interfaces.StepViewUpdated;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
-import com.jmjsolution.solarup.model.Step;
-import com.jmjsolution.solarup.views.HorizontalStepView;
 import com.jmjsolution.solarup.views.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
 import com.jmjsolution.solarup.utils.Utils;
@@ -56,11 +59,16 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.utils.Constants.BOIS;
+import static com.jmjsolution.solarup.utils.Constants.CHARBON;
 import static com.jmjsolution.solarup.utils.Constants.Database.ADDRESS;
 import static com.jmjsolution.solarup.utils.Constants.Database.AZIMUTH;
+import static com.jmjsolution.solarup.utils.Constants.Database.BALLON_THERMODYNAMIQUE;
 import static com.jmjsolution.solarup.utils.Constants.Database.CHAUFFAGE_EAU_TYPE;
 import static com.jmjsolution.solarup.utils.Constants.Database.CHAUFFAGE_TYPE;
 import static com.jmjsolution.solarup.utils.Constants.Database.CITY;
+import static com.jmjsolution.solarup.utils.Constants.Database.CONFIGURATION;
 import static com.jmjsolution.solarup.utils.Constants.Database.CONSOMMATION_ELECTRIQUE;
 import static com.jmjsolution.solarup.utils.Constants.Database.COUT_ELECTRIQUE;
 import static com.jmjsolution.solarup.utils.Constants.Database.DATE;
@@ -69,16 +77,25 @@ import static com.jmjsolution.solarup.utils.Constants.Database.GENRE;
 import static com.jmjsolution.solarup.utils.Constants.Database.GRANDEUR_TOIT;
 import static com.jmjsolution.solarup.utils.Constants.Database.HAUTEUR_PLAFOND;
 import static com.jmjsolution.solarup.utils.Constants.Database.INCLINAISON;
+import static com.jmjsolution.solarup.utils.Constants.Database.INSTALLATION_TYPE;
 import static com.jmjsolution.solarup.utils.Constants.Database.LATITUDE;
 import static com.jmjsolution.solarup.utils.Constants.Database.LONGITUDE;
 import static com.jmjsolution.solarup.utils.Constants.Database.NOM;
 import static com.jmjsolution.solarup.utils.Constants.Database.PERGOLA_CHOICE;
 import static com.jmjsolution.solarup.utils.Constants.Database.PERGOLA_FIXATION;
 import static com.jmjsolution.solarup.utils.Constants.Database.PERSPECTIVE;
+import static com.jmjsolution.solarup.utils.Constants.Database.PHOTOVOLTAIQUE;
+import static com.jmjsolution.solarup.utils.Constants.Database.POMPE_A_CHALEUR;
 import static com.jmjsolution.solarup.utils.Constants.Database.PRENOM;
 import static com.jmjsolution.solarup.utils.Constants.Database.PROJECTS_BRANCH;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
 import static com.jmjsolution.solarup.utils.Constants.Database.TELEPHONE;
+import static com.jmjsolution.solarup.utils.Constants.ELECTRIQUE;
+import static com.jmjsolution.solarup.utils.Constants.FIOUL;
+import static com.jmjsolution.solarup.utils.Constants.GAZ;
+import static com.jmjsolution.solarup.utils.Constants.GPL;
+import static com.jmjsolution.solarup.utils.Constants.PAC;
+import static com.jmjsolution.solarup.utils.Constants.THERMODYNAMIQUE;
 
 public class InformationsCustomerFragment extends Fragment implements UserLocationListener, View.OnClickListener, OnMapReadyCallback {
 
@@ -92,9 +109,13 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     private SupportMapFragment mMapFragment;
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
+    private StepViewUpdated mStepViewUpdated;
+    private boolean mIsPvPresent;
+    private boolean mIsPacPresent;
+    private boolean mIsBtPresent;
 
-    private int mChauffageType = -1;
-    private int mCEType = -1;
+    private String mChauffageType = null;
+    private String mCEType = null;
     private String mAddressName;
     private String mCityName;
     private int mIntervalHauteurPlafond = -1;
@@ -138,17 +159,33 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     @BindView(R.id.socityBtn) RadioButton mSocityBtn;
     @BindView(R.id.fixationDeuxRb) RadioButton mFixationDeuxPiedsBtn;
     @BindView(R.id.fixationQuatreRb) RadioButton mFixationQuatrePiedsBtn;
-    @BindView(R.id.seekBarWithIntervalsPergola) SeekbarWithIntervals mSeekbarWithIntervalsPergola;
     @BindView(R.id.augmenterPouvoirAchatTv) TextView mAugmentationPvrAchatTv;
     @BindView(R.id.transfertChargesTV) TextView mTransfertChargesTv;
     @BindView(R.id.independantTv) TextView mIndependantTv;
-    @BindView(R.id.verticalStepview) HorizontalStepView mVerticalStepView;
+    @BindView(R.id.pergola8) TextView mPergola8Tv;
+    @BindView(R.id.pergola16) TextView mPergola16Tv;
+    @BindView(R.id.pergola18) TextView mPergola18Tv;
+    @BindView(R.id.pergola24) TextView mPergola24Tv;
+    @BindView(R.id.surfaceToitureLabel) TextView mSurfaceToitureLabel;
+    @BindView(R.id.inclinaisonAzimuthLyt) LinearLayout mInclinaisonAzimuthLyt;
+    @BindView(R.id.pergolaLabel) TextView mPergolaLabel;
+    @BindView(R.id.pergolaCv) CardView mPergolaCv;
+    @BindView(R.id.surfaceToitureCv) CardView mSurfaceToitureCv;
+    @BindView(R.id.hauteurSousPlafondLabel) TextView mHauteurSousPlafondLabel;
+    @BindView(R.id.hauteurSousPlafondCv) CardView mHauteurSousPlafondCv;
+    @BindView(R.id.typeChauffageLabel) TextView mTypeChauffageLabel;
+    @BindView(R.id.typeChauffageCv) CardView mTypeChauffageCv;
+    @BindView(R.id.eauChaudeSanitaireLabel) TextView mEauChaudeSanitaireLabel;
+    @BindView(R.id.eauChaudeSanitaireCv) CardView mEauChaudeSanitaireCv;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.infos_customer_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        setViews();
 
         mDatabase = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -158,31 +195,8 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
 
         checkPermissions();
 
-        List<Step> stepBeans = new ArrayList<>();
-        stepBeans.add(new Step("Etude Technique", Step.State.CURRENT));
-        stepBeans.add(new Step("Choix de l'offre", Step.State.CURRENT));
-        stepBeans.add(new Step("Bon de commande", Step.State.COMPLETED));
-        stepBeans.add(new Step("Eligibilite", Step.State.NOT_COMPLETED));
-        stepBeans.add(new Step("Photos", Step.State.CURRENT));
-        stepBeans.add(new Step("Finalisation", Step.State.CURRENT));
-        mVerticalStepView
-                .setSteps(stepBeans)
-                .setCompletedStepTextColor(getResources().getColor(R.color.colorAccent)) // Default: Color.WHITE
-                .setNotCompletedStepTextColor(getResources().getColor(R.color.colorPrimary)) // Default: Color.WHITE
-                .setCurrentStepTextColor(Color.BLACK) // Default: Color.WHITE
-                // Line colors
-                .setCompletedLineColor(getResources().getColor(R.color.colorPrimaryLight)) // Default: Color.WHITE
-                .setNotCompletedLineColor(getResources().getColor(R.color.colorPrimaryDark)) // Default: Color.WHITE
-                // Text size (in sp)
-                .setTextSize(12) // Default: 14sp
-                // Drawable radius (in dp)
-                .setCircleRadius(14) // Default: ~11.2dp
-                // Length of lines separating steps (in dp)
-                .setLineLength(70); // Default: ~34dp
-
         setSeekbarHauteurPlafond();
         setSeekbarGrandeurToiture();
-        setSeekbarPergola();
 
         mSearchAddressBtn.setOnClickListener(this);
         mEditAddressBtn.setOnClickListener(this);
@@ -206,34 +220,58 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
         mAugmentationPvrAchatTv.setOnClickListener(this);
         mTransfertChargesTv.setOnClickListener(this);
         mIndependantTv.setOnClickListener(this);
+        mPergola8Tv.setOnClickListener(this);
+        mPergola16Tv.setOnClickListener(this);
+        mPergola18Tv.setOnClickListener(this);
+        mPergola24Tv.setOnClickListener(this);
 
         return view;
 
     }
 
-    private void setSeekbarPergola() {
-        List<String> intervals = new ArrayList<>();
-        intervals.add("1.2kW \n 8m²");
-        intervals.add("2.4kW \n 16m²");
-        intervals.add("2.7kW \n 18m²");
-        intervals.add("3.6kW \n 24m²");
-        mSeekbarWithIntervalsPergola.setIntervals(intervals);
-        mSeekbarWithIntervalsPergola.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mPergolaChoice = i;
-            }
+    private void setViews() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        db.collection(ROOT)
+                .document(Objects.requireNonNull(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail()))
+                .collection(CONFIGURATION)
+                .document(INSTALLATION_TYPE)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        mIsPvPresent = (boolean) Objects.requireNonNull(task.getResult()).get(PHOTOVOLTAIQUE);
+                        mIsPacPresent = (boolean) Objects.requireNonNull(task.getResult()).get(POMPE_A_CHALEUR);
+                        mIsBtPresent = (boolean) Objects.requireNonNull(task.getResult()).get(BALLON_THERMODYNAMIQUE);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+                        if(!mIsPvPresent){
+                            mSurfaceToitureLabel.setVisibility(View.GONE);
+                            mInclinaisonAzimuthLyt.setVisibility(View.GONE);
+                            mPergolaLabel.setVisibility(View.GONE);
+                            mPergolaCv.setVisibility(View.GONE);
+                            mSurfaceToitureCv.setVisibility(View.GONE);
+                        }
 
-            }
+                        if(!mIsPacPresent && !mIsBtPresent){
+                            mHauteurSousPlafondLabel.setVisibility(View.GONE);
+                            mHauteurSousPlafondCv.setVisibility(View.GONE);
+                            mTypeChauffageLabel.setVisibility(View.GONE);
+                            mTypeChauffageCv.setVisibility(View.GONE);
+                            mEauChaudeSanitaireLabel.setVisibility(View.GONE);
+                            mEauChaudeSanitaireCv.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mStepViewUpdated = (StepViewUpdated) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
     }
 
     private void setSeekbarHauteurPlafond() {
@@ -375,43 +413,43 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
         }
         if(view == mGplIv){
             setChauffageType(mGplIv, mElectricIv, mGazIv, mCharbonIv, mPacIv, mBoisIv, mFioulIv);
-            mChauffageType = 0;
+            mChauffageType = GPL;
         }
         if(view == mElectricIv){
             setChauffageType(mElectricIv, mGplIv, mGazIv, mCharbonIv, mPacIv, mBoisIv, mFioulIv);
-            mChauffageType = 1;
+            mChauffageType = ELECTRIQUE;
         }
         if(view == mGazIv){
             setChauffageType(mGazIv, mElectricIv, mGplIv, mCharbonIv, mPacIv, mBoisIv, mFioulIv);
-            mChauffageType = 2;
+            mChauffageType = GAZ;
         }
         if(view == mCharbonIv){
             setChauffageType(mCharbonIv, mElectricIv, mGazIv, mGplIv, mPacIv, mBoisIv, mFioulIv);
-            mChauffageType = 3;
+            mChauffageType = CHARBON;
         }
         if(view == mPacIv){
             setChauffageType(mPacIv, mElectricIv, mGazIv, mCharbonIv, mGplIv, mBoisIv, mFioulIv);
-            mChauffageType = 4;
+            mChauffageType = PAC;
         }
         if(view == mBoisIv){
             setChauffageType(mBoisIv, mElectricIv, mGazIv, mCharbonIv, mPacIv, mGplIv, mFioulIv);
-            mChauffageType = 5;
+            mChauffageType = BOIS;
         }
         if(view == mFioulIv){
             setChauffageType(mFioulIv, mElectricIv, mGazIv, mCharbonIv, mPacIv, mBoisIv, mGplIv);
-            mChauffageType = 6;
+            mChauffageType = FIOUL;
         }
         if(view == mCEEletriqueTv){
             setChauffeEauType(mCEEletriqueTv, mCEGazTv, mCEThermoTv);
-            mCEType = 0;
+            mCEType = ELECTRIQUE;
         }
         if (view == mCEGazTv) {
             setChauffeEauType(mCEGazTv, mCEEletriqueTv , mCEThermoTv);
-            mCEType = 1;
+            mCEType = GAZ;
         }
         if(view == mCEThermoTv){
             setChauffeEauType(mCEThermoTv, mCEGazTv, mCEEletriqueTv);
-            mCEType = 2;
+            mCEType = THERMODYNAMIQUE;
         }
         if (view == mMrBtn) {
             mGenre = 0;
@@ -462,9 +500,32 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
             mPerspective = 2;
             setPerspective(mIndependantTv, mAugmentationPvrAchatTv, mTransfertChargesTv);
         }
+        if(view == mPergola8Tv){
+            mPergolaChoice = 0;
+            setPergola(mPergola8Tv, mPergola16Tv, mPergola18Tv, mPergola24Tv);
+        }
+        if(view == mPergola16Tv){
+            mPergolaChoice = 1;
+            setPergola(mPergola16Tv, mPergola8Tv, mPergola18Tv, mPergola24Tv);
+        }
+        if(view == mPergola18Tv){
+            mPergolaChoice = 2;
+            setPergola(mPergola18Tv, mPergola8Tv, mPergola16Tv, mPergola24Tv);
+        }
+        if(view == mPergola24Tv){
+            mPergolaChoice = 3;
+            setPergola(mPergola24Tv, mPergola8Tv, mPergola16Tv, mPergola18Tv);
+        }
         if(view == mSubmitBtn){
             if(submitForm()){
                 Map<String, Object> infosCustomer = new ArrayMap<>();
+                if(mIsPvPresent){
+                    infosCustomer.put(GRANDEUR_TOIT, mIntervalGrandeurToiture);
+                    infosCustomer.put(PERGOLA_CHOICE, mPergolaChoice);
+                    infosCustomer.put(PERGOLA_FIXATION, mFixationChoice);
+                    infosCustomer.put(INCLINAISON, mInclinaisonEt.getText().toString());
+                    infosCustomer.put(AZIMUTH, mAzimuthEt.getText().toString());
+                }
                 infosCustomer.put(LATITUDE, mLatLng.latitude);
                 infosCustomer.put(LONGITUDE, mLatLng.longitude);
                 infosCustomer.put(ADDRESS, mAddressName);
@@ -472,18 +533,13 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
                 infosCustomer.put(CHAUFFAGE_TYPE, mChauffageType);
                 infosCustomer.put(CHAUFFAGE_EAU_TYPE, mCEType);
                 infosCustomer.put(HAUTEUR_PLAFOND, mIntervalHauteurPlafond);
-                infosCustomer.put(GRANDEUR_TOIT, mIntervalGrandeurToiture);
                 infosCustomer.put(CONSOMMATION_ELECTRIQUE, mConsoElectriqueEt.getText().toString());
                 infosCustomer.put(COUT_ELECTRIQUE, mCoutElectriciteEt.getText().toString());
-                infosCustomer.put(INCLINAISON, mInclinaisonEt.getText().toString());
-                infosCustomer.put(AZIMUTH, mAzimuthEt.getText().toString());
                 infosCustomer.put(PRENOM, mNameEt.getText().toString());
                 infosCustomer.put(NOM, mLastNameEt.getText().toString());
                 infosCustomer.put(TELEPHONE, mPhoneEt.getText().toString());
                 infosCustomer.put(EMAIL, mEmailEt.getText().toString());
                 infosCustomer.put(GENRE, mGenre);
-                infosCustomer.put(PERGOLA_CHOICE, mPergolaChoice);
-                infosCustomer.put(PERGOLA_FIXATION, mFixationChoice);
                 infosCustomer.put(PERSPECTIVE, mPerspective);
                 infosCustomer.put(DATE, Calendar.getInstance(Locale.FRANCE).getTimeInMillis());
                 mDatabase.collection(ROOT)
@@ -494,6 +550,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(mContext, "succes to store info user", Toast.LENGTH_SHORT).show();
+                        mStepViewUpdated.onStepViewUpdated(0);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -508,8 +565,14 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     private boolean submitForm(){
         boolean validate = true;
 
-        if(mChauffageType == -1 || mCEType == -1 || mIntervalHauteurPlafond == -1 || mIntervalGrandeurToiture == -1){
-            validate = false;
+        if(mIsBtPresent || mIsPacPresent){
+            if(mIntervalHauteurPlafond == -1){
+                validate = false;
+            }
+
+            if(mChauffageType == null || mCEType == null){
+                validate = false;
+            }
         }
 
         if (mAddressName == null && mCityName == null && mLatLng == null) {
@@ -523,16 +586,6 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
 
         if(TextUtils.isEmpty(mCoutElectriciteEt.getText().toString())){
             mCoutElectriciteEt.setError("Required");
-            validate = false;
-        }
-
-        if(TextUtils.isEmpty(mInclinaisonEt.getText().toString())){
-            mInclinaisonEt.setError("Required");
-            validate = false;
-        }
-
-        if(TextUtils.isEmpty(mAzimuthEt.getText().toString())){
-            mAzimuthEt.setError("Required");
             validate = false;
         }
 
@@ -563,14 +616,21 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
 
     private void setChauffeEauType(TextView tv, TextView tv1, TextView tv2) {
         tv.setBackground(getResources().getDrawable(R.drawable.rounded_shape_yellow_stroke));
-        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
-        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
+        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
+        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
     }
 
     private void setPerspective(TextView tv, TextView tv1, TextView tv2) {
         tv.setBackground(getResources().getDrawable(R.drawable.rounded_shape_yellow_stroke));
-        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
-        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_green_stroke));
+        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
+        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
+    }
+
+    private void setPergola(TextView tv, TextView tv1, TextView tv2, TextView tv3) {
+        tv.setBackground(getResources().getDrawable(R.drawable.rounded_shape_yellow_stroke));
+        tv1.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
+        tv2.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
+        tv3.setBackground(getResources().getDrawable(R.drawable.rounded_shape_black_stroke));
     }
 
     private void setChauffageType(ImageView iv, ImageView iv1, ImageView iv2, ImageView iv3, ImageView iv4, ImageView iv5, ImageView iv6) {

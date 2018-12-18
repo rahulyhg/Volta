@@ -188,8 +188,10 @@ public class InfoCustomerModel {
     }
 
     public String getDateFormatted(){
-        return getDate(mDate, "dd/MM/yyyy");
+        return getDate(mDate, "dd MMM yyyy HH:mm");
     }
+
+    public String getBigDateFormatted(){return getDate(mDate, "dd/MM");}
 
     public String getDate(long milliSeconds, String dateFormat) {
         // Create a DateFormatter object for displaying date in specified format.

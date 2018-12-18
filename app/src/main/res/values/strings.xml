@@ -74,4 +74,8 @@
     <string name="augmenter_mon_pouvoir_d_achat">Augmenter mon pouvoir d\'achat</string>
     <string name="transferer_mes_charges">Transferer mes charges</string>
     <string name="devenir_independant_au_plus_vite">Devenir independant au plus vite</string>
+    <string name="_1_2kw_n_8m">8m² : 1.2kW</string>
+    <string name="_2_4kw_n_16m">16m² : 2.4kW</string>
+    <string name="_2_7kw_n_18m">18m² : 2.7kW</string>
+    <string name="_3_6kw_n_24m">24m² : 3.6kW</string>
 </resources>

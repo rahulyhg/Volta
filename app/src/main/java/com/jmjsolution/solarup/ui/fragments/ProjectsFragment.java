@@ -34,8 +34,6 @@ import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
 public class ProjectsFragment extends Fragment {
 
     @BindView(R.id.projectsRv) RecyclerView mRecyclerView;
-    private FirebaseFirestore mDatabase;
-    private FirebaseAuth mAuth;
     private ProjectAdapter mProjectAdapter;
 
     @Nullable
@@ -44,15 +42,15 @@ public class ProjectsFragment extends Fragment {
         View view = inflater.inflate(R.layout.projects_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mDatabase = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
         final ArrayList<InfoCustomerModel> infoCustomerModels = new ArrayList<>();
         final ArrayList<Project> projects = new ArrayList<>();
         mProjectAdapter = new ProjectAdapter(getContext(), projects);
 
-        mDatabase.collection(ROOT)
-                .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()))
+        database.collection(ROOT)
+                .document(Objects.requireNonNull(Objects.requireNonNull(auth.getCurrentUser()).getEmail()))
                 .collection(PROJECTS_BRANCH)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -61,8 +59,11 @@ public class ProjectsFragment extends Fragment {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         if(task.getResult() != null){
                             infoCustomerModels.add(document.toObject(InfoCustomerModel.class));
-                            projects.add(new Project(document.toObject(InfoCustomerModel.class).getNom(), document.toObject(InfoCustomerModel.class).getAddress(),
-                                    document.toObject(InfoCustomerModel.class).getDateFormatted()));
+                            projects.add(new Project(
+                                    document.toObject(InfoCustomerModel.class).getNom(),
+                                    document.toObject(InfoCustomerModel.class).getAddress(),
+                                    document.toObject(InfoCustomerModel.class).getDateFormatted(),
+                                    document.toObject(InfoCustomerModel.class).getBigDateFormatted()));
                             mProjectAdapter.notifyDataSetChanged();
                         } else {
                             Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()

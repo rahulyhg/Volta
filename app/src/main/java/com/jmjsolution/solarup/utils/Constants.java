@@ -8,6 +8,15 @@ public class Constants {
     public static final String IS_PASSWORD_STORED = "is_password_stored";
     public static final String PASSWORD = "password";
 
+    public static final String GPL = "gpl";
+    public static final String ELECTRIQUE = "electrique";
+    public static final String GAZ = "gaz";
+    public static final String CHARBON = "charbon";
+    public static final String PAC = "pompe a chaleur";
+    public static final String BOIS = "bois";
+    public static final String FIOUL = "fioul";
+    public static final String THERMODYNAMIQUE = "thermodynamique";
+
     public class Database {
 
         public static final String ROOT = "users";
@@ -17,6 +26,11 @@ public class Constants {
         public static final String PACK_NAME = "nom_pack";
         public static final String PACK_DESCRIPTIF = "descriptif_pack";
         public static final String PACK_PRICE = "prix_pack";
+        public static final String CONFIGURATION = "configuration";
+        public static final String INSTALLATION_TYPE = "type_installation";
+        public static final String PHOTOVOLTAIQUE = "pv";
+        public static final String POMPE_A_CHALEUR = "pac";
+        public static final String BALLON_THERMODYNAMIQUE = "bt";
         public static final String EMAIL_LOGGIN = "email";
         public static final String UID = "uid";
         public static final String IS_ENABLED_USER = "user_is_enabled";

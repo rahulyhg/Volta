@@ -28,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.jmjsolution.solarup.ui.fragments.ContactUsFragment;
 import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
-import com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
 import com.jmjsolution.solarup.ui.fragments.ProjectsFragment;
@@ -63,7 +62,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
-    private SharedPreferences mSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        mSharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         mDatabase = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -90,38 +88,36 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 startAgendaFrag(mRealisationWdw ,cardviewNumber);
             } else if(cardviewNumber == 1){
                 startProjectsFragment(mProjectWdw, cardviewNumber);
-            } else if(cardviewNumber == 2){
-                startInfoCustomerFrag(mNewProjectWdw, 3);
-            } else if(cardviewNumber == 3){
-                startSettingsFragment(mReglagesWdw, 4);
+            }  else if(cardviewNumber == 3){
+                startSettingsFragment(mReglagesWdw);
             } else if (cardviewNumber == 4) {
-                if(mSharedPref.getBoolean(IS_EMAIL_LINKED, false) && mSharedPref.getBoolean(IS_PASSWORD_STORED, false)){
-                    startContactUsFragment(mContactUsWdw, 5);
+                if(sharedPref.getBoolean(IS_EMAIL_LINKED, false) && sharedPref.getBoolean(IS_PASSWORD_STORED, false)){
+                    startContactUsFragment(mContactUsWdw);
                 } else {
-                    startEmptyFrag(mContactUsWdw, 5);
+                    startEmptyFrag(mContactUsWdw);
                 }
             }
         }
 
     }
 
-    private void startEmptyFrag(CardView view, int cardviewNumber) {
+    private void startEmptyFrag(CardView view) {
         view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         EmptyFragment emptyFragment = new EmptyFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("cardviewNumber", cardviewNumber);
+        bundle.putInt("cardviewNumber", 5);
         emptyFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.frameLayout, emptyFragment);
         fragmentTransaction.commit();
     }
 
-    private void startContactUsFragment(CardView view, int cardviewNumber) {
+    private void startContactUsFragment(CardView view) {
         view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         ContactUsFragment contactUsFragment = new ContactUsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("cardviewNumber", cardviewNumber);
+        bundle.putInt("cardviewNumber", 5);
         contactUsFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.frameLayout, contactUsFragment);
         fragmentTransaction.commit();
@@ -149,23 +145,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         fragmentTransaction.commit();
     }
 
-    private void startInfoCustomerFrag(CardView view, int cardviewNumber) {
-        view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        InformationsCustomerFragment informationsCustomerFragment = new InformationsCustomerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("cardviewNumber", cardviewNumber);
-        informationsCustomerFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.frameLayout, informationsCustomerFragment);
-        fragmentTransaction.commit();
-    }
-
-    private void startSettingsFragment(CardView view, int cardviewNumber) {
+    private void startSettingsFragment(CardView view) {
         view.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         SettingsFragment settingsFragment = new SettingsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("cardviewNumber", cardviewNumber);
+        bundle.putInt("cardviewNumber", 4);
         settingsFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.frameLayout, settingsFragment);
         fragmentTransaction.commit();
@@ -204,20 +189,23 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             startProjectsFragment(mProjectWdw, 1);
         }
         if(view == mNewProjectWdw){
-            resetDesign(mNewProjectWdw, mRealisationWdw, mProjectWdw, mReglagesWdw, mContactUsWdw, mInfosWdw);
-            startInfoCustomerFrag(mNewProjectWdw, 2);
+            startInfoCustomerActivity();
         }
         if (view == mReglagesWdw){
             resetDesign(mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mContactUsWdw, mInfosWdw);
-            startSettingsFragment(mReglagesWdw, 4);
+            startSettingsFragment(mReglagesWdw);
         }
         if (view == mContactUsWdw) {
             resetDesign(mContactUsWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mInfosWdw);
-            startContactUsFragment(mContactUsWdw, 5);
+            startContactUsFragment(mContactUsWdw);
         }
         if (view == mInfosWdw) {
             resetDesign(mInfosWdw, mReglagesWdw, mRealisationWdw, mProjectWdw, mNewProjectWdw, mContactUsWdw);
         }
+    }
+
+    private void startInfoCustomerActivity(){
+        startActivity(new Intent(this, ProcessActivity.class));
     }
 
 
