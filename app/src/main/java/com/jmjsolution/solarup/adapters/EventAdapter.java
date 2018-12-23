@@ -301,7 +301,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
         }
 
-
         private void deleteEvent(int position) {
             ContentResolver cr = mContext.getContentResolver();
             Uri deleteUri;

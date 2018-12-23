@@ -88,6 +88,20 @@
         <item name="cardElevation">4dp</item>
     </style>
 
+
+    <style name="CardViewInfoCustomerCopie" parent="AppTheme">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">1000px</item>
+        <item name="android:layout_height">300px</item>
+        <item name="android:layout_marginStart">16px</item>
+        <item name="android:layout_marginEnd">16px</item>
+        <item name="android:layout_marginBottom">16px</item>
+        <item name="android:layout_marginTop">8px</item>
+        <item name="cardCornerRadius">10px</item>
+        <item name="cardElevation">4px</item>
+    </style>
+
     <style name="TextViewChauffage" parent="AppTheme">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#000000</item>

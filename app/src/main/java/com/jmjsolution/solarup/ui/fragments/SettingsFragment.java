@@ -34,9 +34,12 @@ public class SettingsFragment extends Fragment {
 
     public static final int ACCOUNT_CHOOSER = 12;
     @BindView(R.id.gmailLyt) LinearLayout mGmailLyt;
-    @BindView(R.id.settingSubmitBtn) Button mSubmitBtn;
     @BindView(R.id.emailProTv) TextView mEmailProTv;
     @BindView(R.id.gmailIv) ImageView mGmailIv;
+    @BindView(R.id.packFragLyt) LinearLayout mPackFragLyt;
+    @BindView(R.id.materialFragLyt) LinearLayout mMaterialFragLyt;
+    @BindView(R.id.installationTypeLyt) LinearLayout mInstallationTypeLyt;
+
     private SharedPreferences mSharedPreferences;
 
     @Nullable
@@ -46,6 +49,41 @@ public class SettingsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mSharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
+        configureGmailAccount();
+        mPackFragLyt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.frameLayout, new PackFragment())
+                        .commit();
+            }
+        });
+
+        mMaterialFragLyt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.frameLayout, new MaterialFragment())
+                        .commit();
+            }
+        });
+
+        mInstallationTypeLyt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.frameLayout, new TypeInstallationFragment())
+                        .commit();
+            }
+        });
+
+        return view;
+    }
+
+    private void configureGmailAccount() {
         if (mSharedPreferences.getBoolean(IS_EMAIL_LINKED, false)) {
             mEmailProTv.setText(mSharedPreferences.getString(GMAIL, null));
             mGmailLyt.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +107,6 @@ public class SettingsFragment extends Fragment {
             });
 
         }
-        return view;
     }
 
     @Override

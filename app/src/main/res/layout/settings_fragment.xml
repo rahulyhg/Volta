@@ -4,9 +4,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        style="@style/TextViewLabelCategory"
+        android:text="Ma Configuration Générale"
+        />
+
     <LinearLayout
         android:id="@+id/gmailLyt"
-        android:layout_margin="16dp"
+        android:background="@drawable/rounded_shape_black_stroke"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,14 +32,92 @@
             android:text="@string/configure_email_professionel" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/settingSubmitBtn"
-        android:layout_margin="16dp"
-        android:text="valider"
-        android:padding="8dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        style="@style/TextViewLabelCategory"
+        android:text="Ma Configuration Materielle" />
+
+    <LinearLayout
+        android:id="@+id/packFragLyt"
+        android:background="@drawable/rounded_shape_black_stroke"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_iconfinder_gmail_1024880"/>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/mes_packs" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/materialFragLyt"
+        android:background="@drawable/rounded_shape_black_stroke"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_iconfinder_gmail_1024880"/>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/mon_materiel_label" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="@drawable/rounded_shape_black_stroke"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_iconfinder_gmail_1024880"/>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/organisme_credit" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/installationTypeLyt"
+        android:background="@drawable/rounded_shape_black_stroke"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_iconfinder_gmail_1024880"/>
+
+        <TextView
+            style="@style/TextViewLabelCategory"
+            android:text="@string/type_installation" />
+    </LinearLayout>
 
 
 </LinearLayout>

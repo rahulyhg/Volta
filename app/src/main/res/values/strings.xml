@@ -2,7 +2,6 @@
     <string name="app_name">Volta</string>
     <string name="se_connecter">Se connecter</string>
     <string name="mes_realisations">Mes Realisations</string>
-    <string name="mes_projets">Mes Projets</string>
     <string name="nouveau_projet">Nouveau Projet</string>
     <string name="r_glages">Réglages</string>
     <string name="localisation">Localisation</string>
@@ -55,6 +54,7 @@
     <string name="no_event_planed">Aucun événement n\'est prévu..</string>
     <string name="socity">Société</string>
     <string name="enter_title_label">Entrer un titre</string>
+    <string name="enter_price_label">Entrer un prix</string>
     <string name="valid">Valider</string>
     <string name="cancel">Annuler</string>
     <string name="enter_location_label">Entrer une localisation</string>
@@ -78,4 +78,12 @@
     <string name="_2_4kw_n_16m">16m² : 2.4kW</string>
     <string name="_2_7kw_n_18m">18m² : 2.7kW</string>
     <string name="_3_6kw_n_24m">24m² : 3.6kW</string>
+    <string name="mes_packs">Mes Packs</string>
+    <string name="mes_projets">Mes Projets</string>
+    <string name="mon_materiel_label">Mon Materiel</string>
+    <string name="organisme_credit">Mon Organisme De Financement</string>
+    <string name="type_installation">Mon Type D\'Installation</string>
+    <string name="ballon_thermodynamique">Ballon Thermodynamique</string>
+    <string name="pompe_a_chaleur">Pompe a Chaleur</string>
+    <string name="panneaux_photovolaiques">Panneaux Photovolaiques</string>
 </resources>

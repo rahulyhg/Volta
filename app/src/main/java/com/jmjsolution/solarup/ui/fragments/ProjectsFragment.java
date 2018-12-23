@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jmjsolution.solarup.R;
@@ -23,6 +24,8 @@ import com.jmjsolution.solarup.model.InfoCustomerModel;
 import com.jmjsolution.solarup.model.Project;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -52,7 +55,8 @@ public class ProjectsFragment extends Fragment {
         database.collection(ROOT)
                 .document(Objects.requireNonNull(Objects.requireNonNull(auth.getCurrentUser()).getEmail()))
                 .collection(PROJECTS_BRANCH)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -63,7 +67,14 @@ public class ProjectsFragment extends Fragment {
                                     document.toObject(InfoCustomerModel.class).getNom(),
                                     document.toObject(InfoCustomerModel.class).getAddress(),
                                     document.toObject(InfoCustomerModel.class).getDateFormatted(),
-                                    document.toObject(InfoCustomerModel.class).getBigDateFormatted()));
+                                    document.toObject(InfoCustomerModel.class).getBigDateFormatted(),
+                                    document.toObject(InfoCustomerModel.class).getDate()));
+                            Collections.sort(projects, new Comparator<Project>() {
+                                @Override
+                                public int compare(Project project, Project t1) {
+                                    return project.getLongDate().compareTo(t1.getLongDate());
+                                }
+                            });
                             mProjectAdapter.notifyDataSetChanged();
                         } else {
                             Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()

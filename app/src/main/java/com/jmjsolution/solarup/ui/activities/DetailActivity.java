@@ -30,6 +30,7 @@ import com.jmjsolution.solarup.ui.fragments.ContactUsFragment;
 import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
+import com.jmjsolution.solarup.ui.fragments.PackFragment;
 import com.jmjsolution.solarup.ui.fragments.ProjectsFragment;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 import com.jmjsolution.solarup.services.calendarService.CalendarService;

@@ -287,9 +287,8 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback 
         long eventId = Long.valueOf(uri.getLastPathSegment());
         Toast.makeText(getContext(), "Evénement ajouté.", Toast.LENGTH_SHORT).show();
         CalendarService.syncCalendars(getContext());
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frameLayout, new AgendaFragment())
-                .commit();
+        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+        ft.detach(this).attach(this).commit();
     }
 
 

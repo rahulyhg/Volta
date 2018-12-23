@@ -22,10 +22,7 @@ public class Constants {
         public static final String ROOT = "users";
         public static final String PROJECTS_BRANCH = "projects";
         public static final String PACKS_BRANCH = "packs";
-        public static final String PACK_DOC = "pack_";
-        public static final String PACK_NAME = "nom_pack";
-        public static final String PACK_DESCRIPTIF = "descriptif_pack";
-        public static final String PACK_PRICE = "prix_pack";
+        public static final String MATERIAL_BRANCH = "materiel";
         public static final String CONFIGURATION = "configuration";
         public static final String INSTALLATION_TYPE = "type_installation";
         public static final String PHOTOVOLTAIQUE = "pv";

@@ -2,11 +2,21 @@ package com.jmjsolution.solarup.ui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,14 +26,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +56,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.interfaces.StepViewUpdated;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
+import com.jmjsolution.solarup.utils.BitmapFromViewHelper;
 import com.jmjsolution.solarup.views.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
 import com.jmjsolution.solarup.utils.Utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -59,6 +85,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
 import static com.jmjsolution.solarup.utils.Constants.BOIS;
 import static com.jmjsolution.solarup.utils.Constants.CHARBON;
@@ -102,6 +129,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
 
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 6;
     public static final int MY_PERMISSIONS_REQUEST_READ_CALENDAR = 7;
+    public static final int MY_PERMISSIONS_REQUEST_STORAGE = 8;
 
     private Context mContext;
     private UserLocation myLocation;
@@ -124,6 +152,8 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
     private int mPergolaChoice = -1;
     private int mFixationChoice = -1;
     private int mPerspective = -1;
+
+    @BindView(R.id.llScroll) LinearLayout llScroll;
 
     @BindView(R.id.placeCityTv) TextView mPlaceCityTv;
     @BindView(R.id.placeAddressTv) TextView mAddressTv;
@@ -517,6 +547,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
             setPergola(mPergola24Tv, mPergola8Tv, mPergola16Tv, mPergola18Tv);
         }
         if(view == mSubmitBtn){
+
             if(submitForm()){
                 Map<String, Object> infosCustomer = new ArrayMap<>();
                 if(mIsPvPresent){
@@ -561,6 +592,7 @@ public class InformationsCustomerFragment extends Fragment implements UserLocati
             }
         }
     }
+
 
     private boolean submitForm(){
         boolean validate = true;

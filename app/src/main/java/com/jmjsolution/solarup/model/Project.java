@@ -1,19 +1,24 @@
 package com.jmjsolution.solarup.model;
 
+import android.support.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-public class Project {
+public class Project implements Comparable<Project>{
 
     private String mTitle, mLocation;
     private String mDate;
     private String mBigDate;
+    private long mLongDate;
 
-    public Project(String title, String location, String date, String bigDate) {
+    public Project(String title, String location, String date, String bigDate, long longDate) {
         mTitle = title;
         mLocation = location;
         mDate = date;
         mBigDate = bigDate;
+        mLongDate = longDate;
     }
 
     public String getBigDate() {
@@ -49,4 +54,16 @@ public class Project {
     }
 
 
+    public Date getLongDate() {
+        return new Date(mDate);
+    }
+
+    public void setLongDate(long longDate) {
+        mLongDate = longDate;
+    }
+
+    @Override
+    public int compareTo(@NonNull Project project) {
+        return getLongDate().compareTo(project.getLongDate());
+    }
 }

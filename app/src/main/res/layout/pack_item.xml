@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:transitionName="card_transition"
+    android:id="@+id/card_item_calendar"
+    app:cardCornerRadius="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:padding="2dp"
+                android:id="@+id/namePackTv"
+                android:textSize="22sp"
+                android:textColor="@android:color/black"
+                tools:text="PACK 3kW"
+                android:fontFamily="sans-serif-smallcaps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:id="@+id/descriptifPackTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-smallcaps"
+                android:maxLines="1"
+                tools:text="Panneaux solaires, Condensaterus, Resistance, Allume  "
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:padding="2dp"
+                android:id="@+id/pricePackTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-smallcaps"
+                android:maxLines="1"
+                tools:text="16 000€"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/deletePackIv"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:src="@drawable/ic_delete_black_24dp"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

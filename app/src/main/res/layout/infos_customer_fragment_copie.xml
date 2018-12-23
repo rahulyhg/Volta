@@ -8,30 +8,25 @@
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/llScroll">
+        android:layout_width="1200px"
+        android:layout_height="1692px"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16px"
+            android:layout_marginStart="16px"
+            android:layout_marginTop="16px"
+            android:layout_marginBottom="8px"
             android:textColor="@android:color/black"
-            android:textSize="36sp"
+            android:textSize="32px"
             android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="42px"
             android:text="@string/etude_technique" />
 
 
-
-        <TextView
-            style="@style/TextViewLabelCategory"
-            android:text="@string/informations_de_base" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomerCopie"
+            android:id="@+id/llScroll">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,7 +34,7 @@
                 android:orientation="vertical">
 
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_margin="16dp"
+                    android:layout_margin="16px"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -51,7 +46,7 @@
                         android:layout_height="wrap_content" />
 
                     <RadioButton android:id="@+id/mrRbtn"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="16px"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mr"/>
@@ -59,12 +54,12 @@
                     <RadioButton android:id="@+id/mmeRbtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="16px"
                         android:text="@string/mme"/>
 
                     <RadioButton
                         android:id="@+id/mlleRbtn"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="16px"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mlle"/>
@@ -73,8 +68,8 @@
 
 
                 <LinearLayout
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16px"
+                    android:layout_marginEnd="16px"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -83,9 +78,9 @@
                         android:id="@+id/nameEt"
                         android:textColor="@android:color/black"
                         android:hint="@string/nom"
-                        android:textSize="22sp"
-                        android:layout_margin="8dp"
-                        android:layout_width="0dp"
+                        android:textSize="22px"
+                        android:layout_margin="8px"
+                        android:layout_width="0px"
                         android:layout_weight="1"
                         android:layout_height="wrap_content" />
 
@@ -94,16 +89,16 @@
                         android:id="@+id/lastNameEt"
                         android:textColor="@android:color/black"
                         android:hint="@string/prenom"
-                        android:textSize="22sp"
-                        android:layout_margin="8dp"
-                        android:layout_width="0dp"
+                        android:textSize="22px"
+                        android:layout_margin="8px"
+                        android:layout_width="0px"
                         android:layout_weight="1"
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_margin="16dp"
+                    android:layout_margin="16px"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -111,10 +106,10 @@
                     <EditText
                         android:id="@+id/phoneEt"
                         android:textColor="@android:color/black"
-                        android:layout_margin="8dp"
-                        android:textSize="22sp"
+                        android:layout_margin="8px"
+                        android:textSize="22px"
                         android:hint="@string/telephone"
-                        android:layout_width="0dp"
+                        android:layout_width="0px"
                         android:layout_weight="1"
                         android:layout_height="wrap_content" />
 
@@ -122,10 +117,10 @@
                     <EditText
                         android:id="@+id/mailEt"
                         android:textColor="@android:color/black"
-                        android:textSize="22sp"
-                        android:layout_margin="8dp"
+                        android:textSize="22px"
+                        android:layout_margin="8px"
                         android:hint="@string/email"
-                        android:layout_width="0dp"
+                        android:layout_width="0px"
                         android:layout_weight="1"
                         android:layout_height="wrap_content" />
 
@@ -137,12 +132,7 @@
         </android.support.v7.widget.CardView>
 
 
-
-        <TextView
-            style="@style/TextViewLabelCategory"
-            android:text="@string/localisation" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomerCopie">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -242,13 +232,6 @@
 
                 </LinearLayout>
 
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
-                    class="com.google.android.gms.maps.SupportMapFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp" />
-
             </LinearLayout>
 
 
@@ -259,7 +242,7 @@
         <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="400px">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -361,32 +344,7 @@
     </LinearLayout>
 
 
-
-        <TextView
-            android:id="@+id/hauteurSousPlafondLabel"
-            style="@style/TextViewLabelCategory"
-            android:text="@string/hauteur_sous_plafond" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
-            android:id="@+id/hauteurSousPlafondCv">
-
-            <com.jmjsolution.solarup.views.SeekbarWithIntervals
-                android:id="@+id/seekBarWithIntervals"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="24dp" />
-
-        </android.support.v7.widget.CardView>
-
-
-
-        <TextView
-            android:id="@+id/typeChauffageLabel"
-            style="@style/TextViewLabelCategory"
-            android:text="@string/type_de_chauffage" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
+        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomerCopie"
             android:id="@+id/typeChauffageCv">
 
             <LinearLayout
@@ -560,31 +518,11 @@
 
 
 
-        <TextView
-            android:id="@+id/surfaceToitureLabel"
-            style="@style/TextViewLabelCategory"
-            android:text="@string/surface_de_la_toiture" />
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/surfaceToitureCv"
-            style="@style/CardViewInfoCustomer">
-
-            <com.jmjsolution.solarup.views.SeekbarWithIntervals
-                android:id="@+id/seekBarWithIntervalsToiture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="24dp" />
-
-        </android.support.v7.widget.CardView>
-
-
-
         <LinearLayout
             android:id="@+id/inclinaisonAzimuthLyt"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="250px">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -682,214 +620,6 @@
 
 
         </LinearLayout>
-
-
-
-        <TextView
-            android:id="@+id/pergolaLabel"
-            style="@style/TextViewLabelCategory"
-            android:text="@string/pergola"/>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/pergolaCv"
-            style="@style/CardViewInfoCustomer">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:gravity="center"
-                        android:background="@drawable/rounded_shape_black_stroke"
-                        android:id="@+id/pergola8"
-                        android:layout_width="0dp"
-                        android:textSize="22sp"
-                        android:textColor="@android:color/black"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_1_2kw_n_8m" />
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginTop="24dp"
-                        android:background="@drawable/rounded_shape_black_stroke"
-                        android:id="@+id/pergola16"
-                        android:textSize="22sp"
-                        android:textColor="@android:color/black"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_2_4kw_n_16m" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:gravity="center"
-                        android:background="@drawable/rounded_shape_black_stroke"
-                        android:layout_width="0dp"
-                        android:textSize="22sp"
-                        android:textColor="@android:color/black"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/pergola18"
-                        android:text="@string/_2_7kw_n_18m" />
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginTop="12dp"
-                        android:background="@drawable/rounded_shape_black_stroke"
-                        android:textSize="22sp"
-                        android:textColor="@android:color/black"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/pergola24"
-                        android:text="@string/_3_6kw_n_24m" />
-
-                </LinearLayout>
-
-                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:textSize="22sp"
-                        android:gravity="center"
-                        android:id="@+id/fixationDeuxRb"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/_2_pieds_de_fixation" />
-
-                    <RadioButton
-                        android:textSize="22sp"
-                        android:gravity="center"
-                        android:id="@+id/fixationQuatreRb"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:foregroundGravity="center"
-                        android:text="@string/_4_pieds_de_fixation" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-
-        </android.support.v7.widget.CardView>
-
-
-
-        <TextView
-            android:id="@+id/eauChaudeSanitaireLabel"
-            style="@style/TextViewLabelCategory"
-            android:text="@string/eau_chaude_sanitaire" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer"
-            android:id="@+id/eauChaudeSanitaireCv">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/chauffeEauElectriqueTv"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:text="@string/chauffe_eau_electrique" />
-
-
-                <TextView
-                    android:id="@+id/chauffeEauGazAv89Tv"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:text="@string/chauffe_eau_gaz_installe_avant_1989" />
-
-                <TextView
-                    android:id="@+id/chauffeEauThermoTv"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/chauffe_eau_thermodynamique" />
-
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-
-
-        <TextView
-            style="@style/TextViewLabelCategory"
-            android:text="@string/la_perspective" />
-
-        <android.support.v7.widget.CardView style="@style/CardViewInfoCustomer">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/augmenterPouvoirAchatTv"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:text="@string/augmenter_mon_pouvoir_d_achat" />
-
-
-                <TextView
-                    android:id="@+id/transfertChargesTV"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:text="@string/transferer_mes_charges" />
-
-                <TextView
-                    android:id="@+id/independantTv"
-                    style="@style/TextViewEauChaudeSanitaire"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/devenir_independant_au_plus_vite" />
-
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-
-
-        <Button
-            android:id="@+id/submitBtn"
-            android:padding="8dp"
-            android:textSize="22sp"
-            android:text="@string/continu"
-            android:background="@drawable/layout_bg"
-            android:layout_margin="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
