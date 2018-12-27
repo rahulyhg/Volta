@@ -1,47 +1,36 @@
 package com.jmjsolution.solarup.ui.activities;
 
-import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.StrictMode;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.jmjsolution.solarup.R;
-import com.jmjsolution.solarup.utils.BitmapFromViewHelper;
-import com.jmjsolution.solarup.utils.PDFUtil;
+import com.jmjsolution.solarup.services.emailService.GmailService;
+import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
@@ -50,11 +39,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static com.jmjsolution.solarup.ui.fragments.InformationsCustomerFragment.MY_PERMISSIONS_REQUEST_READ_CALENDAR;
-import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_FIRST_CONNECTION;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_USER_CURRENTLY_ACTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
+import static com.jmjsolution.solarup.utils.Constants.PASSWORD;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -69,27 +58,70 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
 
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.READ_CALENDAR,
+            android.Manifest.permission.WRITE_CALENDAR,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        setCalendarHorizontal();
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
-            checkPermissions(MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PERMISSION_GRANTED) {
-            checkPermissions(MY_PERMISSIONS_REQUEST_READ_CALENDAR, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-            checkPermissions(MY_PERMISSIONS_REQUEST_READ_CALENDAR, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
         mDatabase = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+        setCalendarHorizontal();
+
+        changePassword();
+
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
+        /*final ArrayList<Projexio> projexios = new ArrayList<>();
+        mDatabase.collection(ROOT_CREDIT).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot credit: Objects.requireNonNull(task.getResult())){
+                        String creditString = (String) credit.getString("0");
+                        if(Objects.requireNonNull(creditString).equalsIgnoreCase("800")){
+                            Projexio projexio = new Projexio(
+                                    credit.getString("0"),
+                                    credit.getString("1"),
+                                    credit.getString("2"),
+                                    credit.getString("3"),
+                                    credit.getString("4"),
+                                    credit.getString("5"),
+                                    credit.getString("6"),
+                                    credit.getString("7"),
+                                    credit.getString("8"),
+                                    credit.getString("9"),
+                                    credit.getString("10"),
+                                    credit.getString("11"),
+                                    credit.getString("12"),
+                                    credit.getString("13"),
+                                    credit.getString("14"),
+                                    credit.getString("15"),
+                                    credit.getString("16"),
+                                    credit.getString("17"),
+                                    credit.getString("18"),
+                                    credit.getString("19")
+                            );
+                            projexios.add(projexio);
+                        }
+                    }
+                }
+            }
+        });*/
 
         mRealisationWdw.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,21 +160,81 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    private void changePassword() {
+        if(getIntent().getBooleanExtra(IS_FIRST_CONNECTION, false)){
+            final String password = getIntent().getStringExtra(PASSWORD);
 
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.password_changer_alertdialog);
+            final EditText oldPasswordEt = dialog.findViewById(R.id.oldPasswordEt);
+            final EditText newPasswordOnceEt = dialog.findViewById(R.id.newPasswordOnceEt);
+            final EditText newPasswordTwiceEt = dialog.findViewById(R.id.newPasswordTwiceEt);
+            Button validPasswordChangeBtn = dialog.findViewById(R.id.validPasswordChangeBtn);
 
-    private void startInfoCustomerActivity(){
-        startActivity(new Intent(this, ScrollActivity.class));
+            validPasswordChangeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean valid = true;
+
+                    if(!oldPasswordEt.getText().toString().equals(password)){
+                        oldPasswordEt.setError("Mauvais mot de passe");
+                        valid = false;
+                    }
+
+                    if(!newPasswordOnceEt.getText().toString().equals(newPasswordTwiceEt.getText().toString())){
+                        valid = false;
+                        newPasswordOnceEt.setError("Les mots de passe ne sont pas identiques");
+                        newPasswordTwiceEt.setError("Les mots de passe ne sont pas identiques");
+                    }
+
+                    if(valid){
+                        AuthCredential credential = EmailAuthProvider.getCredential(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()), password);
+                        mAuth.getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    mAuth.getCurrentUser().updatePassword(newPasswordOnceEt.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                dialog.dismiss();
+                                                Toast.makeText(HomeActivity.this, "Mot de passe changé avec succès.", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                oldPasswordEt.getText().clear();
+                                                newPasswordOnceEt.getText().clear();
+                                                newPasswordTwiceEt.getText().clear();
+                                                Toast.makeText(HomeActivity.this, "Erreur de changement du mot de passe.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    dialog.dismiss();
+                                    Toast.makeText(HomeActivity.this, "Erreur d'authentification.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            dialog.show();
+
+        }
     }
 
-
-    private void checkPermissions(int callbackId, String... permissionsId) {
-        boolean permissions = true;
-        for (String p : permissionsId) {
-            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
         }
+        return true;
+    }
 
-        if (!permissions)
-            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+    private void startInfoCustomerActivity(){
+        startActivity(new Intent(this, ProcessActivity.class));
     }
 
     private void transitionIntent(int cardviewNumber) {
@@ -192,7 +284,7 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof FirebaseAuthInvalidUserException) {
                         mDatabase.collection(ROOT)
-                                .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())).update(IS_ENABLED_USER, 2)
+                                .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())).update(IS_USER_CURRENTLY_ACTIVE, false)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

@@ -5,7 +5,7 @@ public class Constants {
 
     public static final String GMAIL = "gmail";
     public static final String IS_EMAIL_LINKED = "is_email_linked";
-    public static final String IS_PASSWORD_STORED = "is_password_stored";
+    public static final String ACCOUNT_TYPE = "account_type";
     public static final String PASSWORD = "password";
 
     public static final String GPL = "gpl";
@@ -20,6 +20,7 @@ public class Constants {
     public class Database {
 
         public static final String ROOT = "users";
+        public static final String ROOT_CREDIT = "credit";
         public static final String PROJECTS_BRANCH = "projects";
         public static final String PACKS_BRANCH = "packs";
         public static final String MATERIAL_BRANCH = "materiel";
@@ -30,7 +31,8 @@ public class Constants {
         public static final String BALLON_THERMODYNAMIQUE = "bt";
         public static final String EMAIL_LOGGIN = "email";
         public static final String UID = "uid";
-        public static final String IS_ENABLED_USER = "user_is_enabled";
+        public static final String IS_FIRST_CONNECTION = "is_first_connection";
+        public static final String IS_USER_CURRENTLY_ACTIVE = "is_user_currently_active";
         public static final String CONNEXION_DATE = "date_connexion";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";

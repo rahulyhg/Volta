@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +38,7 @@ import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
 public class ProjectsFragment extends Fragment {
 
     @BindView(R.id.projectsRv) RecyclerView mRecyclerView;
+    @BindView(R.id.loadingProjectsPb) ProgressBar mLoadingProjectsPb;
     private ProjectAdapter mProjectAdapter;
 
     @Nullable
@@ -45,6 +47,7 @@ public class ProjectsFragment extends Fragment {
         View view = inflater.inflate(R.layout.projects_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        mLoadingProjectsPb.setVisibility(View.VISIBLE);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -76,6 +79,7 @@ public class ProjectsFragment extends Fragment {
                                 }
                             });
                             mProjectAdapter.notifyDataSetChanged();
+                            mLoadingProjectsPb.setVisibility(View.GONE);
                         } else {
                             Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.frameLayout, new EmptyFragment())

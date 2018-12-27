@@ -205,30 +205,22 @@ public class CalendarService {
     private static HashSet<String> getCalenderIds(Cursor cursor) {
 
         HashSet<String> calendarIds = new HashSet<>();
-
         try {
-
             if(cursor.getCount() > 0) {
-
                 while (cursor.moveToNext()) {
-
                     String _id = cursor.getString(0);
                     String displayName = cursor.getString(1);
                     Boolean selected = !cursor.getString(2).equals("0");
 
                     System.out.println("Id: " + _id + " Display Name: " + displayName + " Selected: " + selected);
                     calendarIds.add(_id);
-
                 }
             }
         }
-
         catch(AssertionError | Exception ex) {
             ex.printStackTrace();
         }
-
         return calendarIds;
-
     }
 
     @SuppressLint("MissingPermission")

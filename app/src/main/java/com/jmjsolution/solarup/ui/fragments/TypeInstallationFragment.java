@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +40,8 @@ public class TypeInstallationFragment extends Fragment {
     @BindView(R.id.thermoCb) CheckBox mBallonThermoCheckBox;
     @BindView(R.id.pacCb) CheckBox mPacCheckBox;
     @BindView(R.id.pvCb) CheckBox mPvCheckBox;
+    @BindView(R.id.loadingInstallationType) ProgressBar mLoadingInstallationTypePb;
+
 
     @Nullable
     @Override
@@ -45,6 +49,7 @@ public class TypeInstallationFragment extends Fragment {
         View view = inflater.inflate(R.layout.installation_type_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        mLoadingInstallationTypePb.setVisibility(View.VISIBLE);
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
 
@@ -66,6 +71,8 @@ public class TypeInstallationFragment extends Fragment {
                 if(isPacPresent){
                     mPacCheckBox.setChecked(true);
                 }
+
+                mLoadingInstallationTypePb.setVisibility(View.GONE);
             }
         });
 
@@ -73,6 +80,7 @@ public class TypeInstallationFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 updateInstallationType("bt", b);
+                mLoadingInstallationTypePb.setVisibility(View.VISIBLE);
             }
         });
 
@@ -80,6 +88,7 @@ public class TypeInstallationFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 updateInstallationType("pac", b);
+                mLoadingInstallationTypePb.setVisibility(View.VISIBLE);
             }
         });
 
@@ -87,6 +96,7 @@ public class TypeInstallationFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 updateInstallationType("pv", b);
+                mLoadingInstallationTypePb.setVisibility(View.VISIBLE);
             }
         });
 
@@ -98,12 +108,13 @@ public class TypeInstallationFragment extends Fragment {
                 .collection(CONFIGURATION).document(INSTALLATION_TYPE).update(name, b).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
+                mLoadingInstallationTypePb.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                mLoadingInstallationTypePb.setVisibility(View.GONE);
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.jmjsolution.solarup.ui.fragments;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,13 +26,14 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
+import static com.jmjsolution.solarup.utils.Constants.ACCOUNT_TYPE;
 import static com.jmjsolution.solarup.utils.Constants.GMAIL;
 import static com.jmjsolution.solarup.utils.Constants.IS_EMAIL_LINKED;
-import static com.jmjsolution.solarup.utils.Constants.IS_PASSWORD_STORED;
 
 public class SettingsFragment extends Fragment {
 
-    public static final int ACCOUNT_CHOOSER = 12;
+    public static final int REQUEST_CODE_PICK_ACCOUNT = 307;
     @BindView(R.id.gmailLyt) LinearLayout mGmailLyt;
     @BindView(R.id.emailProTv) TextView mEmailProTv;
     @BindView(R.id.gmailIv) ImageView mGmailIv;
@@ -40,7 +41,7 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.materialFragLyt) LinearLayout mMaterialFragLyt;
     @BindView(R.id.installationTypeLyt) LinearLayout mInstallationTypeLyt;
 
-    private SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPref;
 
     @Nullable
     @Override
@@ -48,8 +49,9 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mSharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
+        mSharedPref = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
         configureGmailAccount();
+
         mPackFragLyt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,36 +86,49 @@ public class SettingsFragment extends Fragment {
     }
 
     private void configureGmailAccount() {
-        if (mSharedPreferences.getBoolean(IS_EMAIL_LINKED, false)) {
-            mEmailProTv.setText(mSharedPreferences.getString(GMAIL, null));
+        if (mSharedPref.getBoolean(IS_EMAIL_LINKED, false)) {
+            mEmailProTv.setText(mSharedPref.getString(GMAIL, null));
             mGmailLyt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putBoolean(IS_EMAIL_LINKED, false).apply();
-                    Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google", "com.google.android.legacyimap"}, false, null, null, null, null);
-                    Objects.requireNonNull(getActivity()).startActivityForResult(intent, ACCOUNT_CHOOSER);
+                    launchAccountPicker();
                 }
             });
         } else {
             mGmailLyt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putBoolean(IS_EMAIL_LINKED, false).apply();
-                    Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google", "com.google.android.legacyimap"}, false, null, null, null, null);
-                    Objects.requireNonNull(getActivity()).startActivityForResult(intent, ACCOUNT_CHOOSER);
+                    launchAccountPicker();
                 }
             });
 
         }
     }
 
+    private void launchAccountPicker() {
+        Intent intent = AccountPicker.newChooseAccountIntent(null, null,
+                null, false, null, null, null, null);
+        SettingsFragment.this.startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SettingsFragment.REQUEST_CODE_PICK_ACCOUNT && resultCode == RESULT_OK) {
+            String mEmail = Objects.requireNonNull(data).getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            String mType = data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+            mSharedPref.edit().putString(GMAIL, mEmail).apply();
+            mSharedPref.edit().putString(ACCOUNT_TYPE, mType).apply();
+            mSharedPref.edit().putBoolean(IS_EMAIL_LINKED, true).apply();
+            Objects.requireNonNull(getFragmentManager()).beginTransaction().detach(this).attach(this).commit();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        mSharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
-        if(mSharedPreferences.getBoolean(IS_EMAIL_LINKED, false) && mSharedPreferences.getBoolean(IS_PASSWORD_STORED, false)){
+        mSharedPref = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
+        if(mSharedPref.getBoolean(IS_EMAIL_LINKED, false)){
             mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
         } else {
             mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.MULTIPLY);

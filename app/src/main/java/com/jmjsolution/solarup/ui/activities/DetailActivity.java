@@ -1,54 +1,45 @@
 package com.jmjsolution.solarup.ui.activities;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.text.InputType;
-import android.util.ArrayMap;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.jmjsolution.solarup.services.emailService.GmailService;
 import com.jmjsolution.solarup.ui.fragments.ContactUsFragment;
 import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
-import com.jmjsolution.solarup.ui.fragments.PackFragment;
 import com.jmjsolution.solarup.ui.fragments.ProjectsFragment;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
-import com.jmjsolution.solarup.services.calendarService.CalendarService;
 
-import java.util.Map;
+import java.io.IOException;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.jmjsolution.solarup.ui.fragments.SettingsFragment.ACCOUNT_CHOOSER;
 import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
-import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.utils.Constants.ACCOUNT_TYPE;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_USER_CURRENTLY_ACTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
 import static com.jmjsolution.solarup.utils.Constants.GMAIL;
 import static com.jmjsolution.solarup.utils.Constants.IS_EMAIL_LINKED;
-import static com.jmjsolution.solarup.utils.Constants.IS_PASSWORD_STORED;
-import static com.jmjsolution.solarup.utils.Constants.PASSWORD;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,6 +54,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
+    private SharedPreferences mSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +62,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        SharedPreferences sharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        mSharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         mDatabase = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -92,7 +84,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }  else if(cardviewNumber == 3){
                 startSettingsFragment(mReglagesWdw);
             } else if (cardviewNumber == 4) {
-                if(sharedPref.getBoolean(IS_EMAIL_LINKED, false) && sharedPref.getBoolean(IS_PASSWORD_STORED, false)){
+                if(mSharedPref.getBoolean(IS_EMAIL_LINKED, false)){
                     startContactUsFragment(mContactUsWdw);
                 } else {
                     startEmptyFrag(mContactUsWdw);
@@ -165,7 +157,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof FirebaseAuthInvalidUserException) {
-                        mDatabase.collection(ROOT).document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())).update(IS_ENABLED_USER, 2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        mDatabase.collection(ROOT).document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())).update(IS_USER_CURRENTLY_ACTIVE, false).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 startActivity(new Intent(DetailActivity.this, LoginActivity.class));
@@ -190,6 +182,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             startProjectsFragment(mProjectWdw, 1);
         }
         if(view == mNewProjectWdw){
+            resetDesign(mNewProjectWdw, mProjectWdw, mRealisationWdw, mReglagesWdw, mContactUsWdw, mInfosWdw);
             startInfoCustomerActivity();
         }
         if (view == mReglagesWdw){
@@ -207,72 +200,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void startInfoCustomerActivity(){
         startActivity(new Intent(this, ProcessActivity.class));
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == ACCOUNT_CHOOSER){
-            if(data != null) {
-                final SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-
-                if(!getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getBoolean(IS_PASSWORD_STORED, false)
-                        || !Objects.requireNonNull(getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getString(GMAIL, null)).equalsIgnoreCase(name)){
-                    final EditText taskEditText = new EditText(this);
-                    taskEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    new AlertDialog.Builder(this)
-                            .setTitle(name)
-                            .setMessage("Entrez votre mot de passe Gmail")
-                            .setView(taskEditText)
-                            .setPositiveButton("Valider", new DialogInterface.OnClickListener() {
-                                @SuppressLint("SetJavaScriptEnabled")
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mProgressBar.setVisibility(View.VISIBLE);
-                                    Map<String, Object> password = new ArrayMap<>();
-                                    password.put(PASSWORD, taskEditText.getText().toString());
-                                    mDatabase.collection(ROOT)
-                                            .document(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())).set(password, SetOptions.merge())
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            mProgressBar.setVisibility(View.GONE);
-                                            getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit().putBoolean(IS_PASSWORD_STORED, true).apply();
-                                            Toast.makeText(DetailActivity.this, "Veuillez autoriser l'accés aux applications moins sécurisées", Toast.LENGTH_LONG).show();
-
-                                            String url = "https://myaccount.google.com/lesssecureapps";
-                                            Intent i = new Intent(Intent.ACTION_VIEW);
-                                            i.setData(Uri.parse(url));
-                                            startActivity(i);
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-
-
-                                }
-                            }).create().show();
-                }
-
-                // TODO : resolve clear events list after changing account
-            /*if(!name.equalsIgnoreCase(getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getString("email", null))){
-                EventAdapter.mEvents.clear();
-            }*/
-
-                editor.putString(GMAIL, name).apply();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new SettingsFragment())
-                        .commit();
-                CalendarService.syncCalendars(this);
-            }
-        }
     }
 
     private void resetDesign(CardView cardViewToChange, CardView cardView1, CardView cardView2, CardView cardView3, CardView cardView4, CardView cardView5) {

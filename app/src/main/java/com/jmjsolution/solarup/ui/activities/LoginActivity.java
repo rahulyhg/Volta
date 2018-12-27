@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jmjsolution.solarup.R;
-import com.jmjsolution.solarup.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,9 +32,11 @@ import butterknife.ButterKnife;
 
 import static com.jmjsolution.solarup.utils.Constants.Database.CONNEXION_DATE;
 import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_LOGGIN;
-import static com.jmjsolution.solarup.utils.Constants.Database.IS_ENABLED_USER;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_FIRST_CONNECTION;
+import static com.jmjsolution.solarup.utils.Constants.Database.IS_USER_CURRENTLY_ACTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
 import static com.jmjsolution.solarup.utils.Constants.Database.UID;
+import static com.jmjsolution.solarup.utils.Constants.PASSWORD;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -74,51 +75,48 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                 if(task.getResult() != null && task.getResult().getData() != null) {
-                    boolean keyExists = task.getResult().getData().containsKey(IS_ENABLED_USER);
-                    if(keyExists) {
-                        long status = (long) task.getResult().get(IS_ENABLED_USER);
-                        if(status == 1){
-                            Toast.makeText(LoginActivity.this, "This is user is currently active.", Toast.LENGTH_SHORT).show();
-                        } else if(status == 2){
 
-                            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
+                    boolean status = (boolean) task.getResult().get(IS_USER_CURRENTLY_ACTIVE);
+                    if(status){
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(LoginActivity.this, "This is user is currently active.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                    if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                                if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
 
-                                        Map<String, Object> user = new HashMap<>();
-                                        user.put(EMAIL_LOGGIN, mAuth.getCurrentUser().getEmail());
-                                        user.put(UID, mAuth.getCurrentUser().getUid());
-                                        user.put(IS_ENABLED_USER, 1);
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put(EMAIL_LOGGIN, mAuth.getCurrentUser().getEmail());
+                                    user.put(UID, mAuth.getCurrentUser().getUid());
+                                    user.put(IS_USER_CURRENTLY_ACTIVE, true);
 
-                                        mDatabase.collection(ROOT).document(email).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                mProgressBar.setVisibility(View.INVISIBLE);
-                                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                                intent.putExtra(EMAIL_LOGGIN, email);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                mProgressBar.setVisibility(View.INVISIBLE);
-                                                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                    mDatabase.collection(ROOT).document(email).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            mProgressBar.setVisibility(View.INVISIBLE);
+                                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                            intent.putExtra(IS_FIRST_CONNECTION, false);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            mProgressBar.setVisibility(View.INVISIBLE);
+                                            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                                    } else {
-                                        mProgressBar.setVisibility(View.INVISIBLE);
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                    }
-
+                                } else {
+                                    mProgressBar.setVisibility(View.INVISIBLE);
+                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                 }
-                            });
 
-                        }
+                            }
+                        });
                     }
 
                 } else {
@@ -137,14 +135,15 @@ public class LoginActivity extends AppCompatActivity {
                                 user.put(EMAIL_LOGGIN, mAuth.getCurrentUser().getEmail());
                                 user.put(UID, mAuth.getCurrentUser().getUid());
                                 user.put(CONNEXION_DATE, date);
-                                user.put(IS_ENABLED_USER, 1);
+                                user.put(IS_USER_CURRENTLY_ACTIVE, true);
 
                                 mDatabase.collection(ROOT).document(email).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         mProgressBar.setVisibility(View.INVISIBLE);
                                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                        intent.putExtra(EMAIL_LOGGIN, email);
+                                        intent.putExtra(IS_FIRST_CONNECTION, true);
+                                        intent.putExtra(PASSWORD, password);
                                         startActivity(intent);
                                         finish();
                                     }

@@ -86,4 +86,8 @@
     <string name="ballon_thermodynamique">Ballon Thermodynamique</string>
     <string name="pompe_a_chaleur">Pompe a Chaleur</string>
     <string name="panneaux_photovolaiques">Panneaux Photovolaiques</string>
+    <string name="mes_installations">Mes Installations</string>
+    <string name="ancien_mot_de_passe">Ancien mot de passe</string>
+    <string name="nouveau_mot_de_passe">Nouveau mot de passe</string>
+    <string name="ressaisisser_le_nouveau_mot_de_passe">Ressaisisser le nouveau mot de passe</string>
 </resources>
