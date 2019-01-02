@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.services.emailService;
+package com.jmjsolution.solarup.notUsedForNow;
 import java.security.AccessController;
 
 import java.security.Provider;

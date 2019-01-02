@@ -1,6 +1,5 @@
-package com.jmjsolution.solarup.utils;
+package com.jmjsolution.solarup.notUsedForNow;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.pdf.PdfDocument;

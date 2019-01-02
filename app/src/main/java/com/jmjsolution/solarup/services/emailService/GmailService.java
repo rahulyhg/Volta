@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -22,11 +23,17 @@ import com.sun.mail.util.BASE64EncoderStream;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import static com.jmjsolution.solarup.utils.Constants.ACCOUNT_TYPE;
@@ -43,6 +50,7 @@ public class GmailService {
     private String receiver;
     private String title;
     private View view;
+    private MimeMultipart mMimeMultiparte = new MimeMultipart();
 
 
     public GmailService(Context context, String body, String receiver, String title, View view, SharedPreferences sharedPref){
@@ -57,7 +65,7 @@ public class GmailService {
 
 
     public void initToken() {
-        acctManager.getAuthToken(createAccountFromData(), "oauth2:https://mail.google.com/", null, (Activity) context, new AccountManagerCallback<Bundle>(){
+        acctManager.getAuthToken(createAccountFromData(), "oauth2:https://mail.google.com/", true, new AccountManagerCallback<Bundle>(){
             @Override
             public void run(AccountManagerFuture<Bundle> result){
                 try{
@@ -101,11 +109,16 @@ public class GmailService {
                 user, oauthToken, true);
 
         MimeMessage message = new MimeMessage(session);
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(
-                body.getBytes(), "text/plain"));
+        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
         message.setSender(new InternetAddress(user));
         message.setSubject(subject);
         message.setDataHandler(handler);
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setText(body);
+        mMimeMultiparte.addBodyPart(messageBodyPart);
+        String  l = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/IMG_20181227_183801.jpg";
+        addAttachment(l, "WPVG_icon");
+        message.setContent(mMimeMultiparte);
         if (recipients.indexOf(',') > 0)
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipients));
@@ -117,6 +130,16 @@ public class GmailService {
     } catch (Exception e) {
         Log.d("test", e.getMessage(), e);
     }
+    }
+
+    private void addAttachment(String filePath, String filename) throws Exception {
+
+        BodyPart messageBodyPart = new MimeBodyPart();
+        DataSource source = new FileDataSource(filePath);
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(filename);
+        mMimeMultiparte.addBodyPart(messageBodyPart);
+
     }
 
     private SMTPTransport connectToSmtp(String host, int port, String userEmail, String oauthToken, boolean debug) throws Exception {

@@ -1,5 +1,6 @@
 package com.jmjsolution.solarup.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class CalendarEvent implements Comparable<CalendarEvent>{
@@ -10,12 +11,11 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
     private boolean allDay;
     private long id;
     private int eventStatus;
+    private boolean isFromGmail;
 
-    public CalendarEvent() {
+    public CalendarEvent() { }
 
-    }
-
-    public CalendarEvent(String title, Date begin, Date end, boolean allDay, long id, String location, int eventStatus) {
+    public CalendarEvent(String title, Date begin, Date end, boolean allDay, long id, String location, int eventStatus, boolean isFromGmail) {
         setTitle(title);
         setBegin(begin);
         setEnd(end);
@@ -23,6 +23,7 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
         setId(id);
         setLocation(location);
         setEventStatus(eventStatus);
+        setIsFromGmail(isFromGmail);
     }
 
     public String getTitle() {
@@ -80,6 +81,15 @@ public class CalendarEvent implements Comparable<CalendarEvent>{
     public void setEventStatus(int eventStatus) {
         this.eventStatus = eventStatus;
     }
+
+    public boolean getIsFromGmail() {
+        return isFromGmail;
+    }
+
+    public void setIsFromGmail(boolean fromGmail) {
+        isFromGmail = fromGmail;
+    }
+
 
     @Override
     public String toString(){

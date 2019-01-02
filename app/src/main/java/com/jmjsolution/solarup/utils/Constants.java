@@ -17,10 +17,18 @@ public class Constants {
     public static final String FIOUL = "fioul";
     public static final String THERMODYNAMIQUE = "thermodynamique";
 
+    public static final String THREE_DAYS_REMINDER = "three_days_reminder";
+    public static final String WEEK_REMINDER = "week_reminder";
+    public static final String MONTH_REMINDER = "month_reminder";
+
     public class Database {
 
         public static final String ROOT = "users";
         public static final String ROOT_CREDIT = "credit";
+        public static final String CALENDAR_TYPE = "type_of_calendar";
+        public static final String EMAIL_RECUPERATION = "email_recup";
+        public static final String LOCAL_EVENTS = "events_local";
+        public static final String EVENTS_BRANCH = "events";
         public static final String PROJECTS_BRANCH = "projects";
         public static final String PACKS_BRANCH = "packs";
         public static final String MATERIAL_BRANCH = "materiel";

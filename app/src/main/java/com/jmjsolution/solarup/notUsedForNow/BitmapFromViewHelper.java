@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.utils;
+package com.jmjsolution.solarup.notUsedForNow;
 
 import android.content.Context;
 import android.graphics.Bitmap;

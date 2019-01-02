@@ -64,7 +64,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.interfaces.StepViewUpdated;
 import com.jmjsolution.solarup.interfaces.UserLocationListener;
-import com.jmjsolution.solarup.utils.BitmapFromViewHelper;
 import com.jmjsolution.solarup.views.SeekbarWithIntervals;
 import com.jmjsolution.solarup.utils.UserLocation;
 import com.jmjsolution.solarup.utils.Utils;

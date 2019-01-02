@@ -1,8 +1,10 @@
 package com.jmjsolution.solarup.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,12 +29,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.jmjsolution.solarup.utils.Constants.Database.CONNEXION_DATE;
 import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_LOGGIN;
+import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_RECUPERATION;
 import static com.jmjsolution.solarup.utils.Constants.Database.IS_FIRST_CONNECTION;
 import static com.jmjsolution.solarup.utils.Constants.Database.IS_USER_CURRENTLY_ACTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
@@ -45,9 +50,11 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.passwordTv) EditText mPasswordTv;
     @BindView(R.id.signInBtn) Button mSignInBtn;
     @BindView(R.id.progressBarLogin) ProgressBar mProgressBar;
+    @BindView(R.id.forgotPasswordTv) TextView mForgotPasswordTv;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
+    private String mMailRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,45 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        mForgotPasswordTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetPassword();
+            }
+        });
+
+    }
+
+    private void resetPassword(){
+        final EditText taskEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(this))
+                .setTitle(R.string.enter_location_label)
+                .setView(taskEditText)
+                .setPositiveButton(R.string.valid, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mMailRoot = taskEditText.getText().toString();
+                            mDatabase.collection(ROOT).document(mMailRoot).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        mAuth.sendPasswordResetEmail((String) Objects.requireNonNull(Objects.requireNonNull(task.getResult()).get(EMAIL_RECUPERATION))).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(LoginActivity.this, "Email envoyé.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "Ce mail n'existe pas.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void signIn(final String email, final String password) {

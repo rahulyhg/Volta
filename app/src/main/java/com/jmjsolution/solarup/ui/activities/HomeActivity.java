@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,12 +28,14 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.services.emailService.GmailService;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -40,6 +43,7 @@ import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 
 import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
+import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_RECUPERATION;
 import static com.jmjsolution.solarup.utils.Constants.Database.IS_FIRST_CONNECTION;
 import static com.jmjsolution.solarup.utils.Constants.Database.IS_USER_CURRENTLY_ACTIVE;
 import static com.jmjsolution.solarup.utils.Constants.Database.ROOT;
@@ -169,6 +173,7 @@ public class HomeActivity extends AppCompatActivity {
             final EditText oldPasswordEt = dialog.findViewById(R.id.oldPasswordEt);
             final EditText newPasswordOnceEt = dialog.findViewById(R.id.newPasswordOnceEt);
             final EditText newPasswordTwiceEt = dialog.findViewById(R.id.newPasswordTwiceEt);
+            final EditText mailRecupEt = dialog.findViewById(R.id.recupEmail);
             Button validPasswordChangeBtn = dialog.findViewById(R.id.validPasswordChangeBtn);
 
             validPasswordChangeBtn.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +192,11 @@ public class HomeActivity extends AppCompatActivity {
                         newPasswordTwiceEt.setError("Les mots de passe ne sont pas identiques");
                     }
 
+                    if(mailRecupEt.getText().toString().isEmpty()){
+                        valid = false;
+                        mailRecupEt.setError("Requis");
+                    }
+
                     if(valid){
                         AuthCredential credential = EmailAuthProvider.getCredential(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()), password);
                         mAuth.getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -198,7 +208,12 @@ public class HomeActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
                                                 dialog.dismiss();
+                                                Map<String, String> password = new ArrayMap<>();
+                                                ((ArrayMap<String, String>) password).put(EMAIL_RECUPERATION, mailRecupEt.getText().toString());
                                                 Toast.makeText(HomeActivity.this, "Mot de passe changé avec succès.", Toast.LENGTH_SHORT).show();
+                                                mDatabase.collection(ROOT).document(Objects.requireNonNull(mAuth.getCurrentUser().getEmail()))
+                                                        .set(password, SetOptions.merge()).isSuccessful();
+
                                             } else {
                                                 oldPasswordEt.getText().clear();
                                                 newPasswordOnceEt.getText().clear();

@@ -13,12 +13,14 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Attendees;
 import android.text.format.DateUtils;
 
 import com.jmjsolution.solarup.model.CalendarEvent;
@@ -39,13 +41,13 @@ public class CalendarService {
     };
 
     private static final String[] attendeeProjection = new String[]{
-            CalendarContract.Attendees._ID,
-            CalendarContract.Attendees.EVENT_ID,
-            CalendarContract.Attendees.ATTENDEE_NAME,
-            CalendarContract.Attendees.ATTENDEE_EMAIL,
-            CalendarContract.Attendees.ATTENDEE_TYPE,
-            CalendarContract.Attendees.ATTENDEE_RELATIONSHIP,
-            CalendarContract.Attendees.ATTENDEE_STATUS
+            Attendees._ID,
+            Attendees.EVENT_ID,
+            Attendees.ATTENDEE_NAME,
+            Attendees.ATTENDEE_EMAIL,
+            Attendees.ATTENDEE_TYPE,
+            Attendees.ATTENDEE_RELATIONSHIP,
+            Attendees.ATTENDEE_STATUS
     };
 
     public static void readCalendar(Context context) {
@@ -111,8 +113,6 @@ public class CalendarService {
                         Collections.sort(mEventsList);
                         eventMap.put(id, mEventsList);
 
-                        System.out.println(eventMap.keySet().size() + " " + eventMap.values());
-
                     }
                 }
             }
@@ -123,9 +123,9 @@ public class CalendarService {
 
     private static int getAttendeesStatus(ContentResolver contentResolver, CalendarEvent ce, Context context) {
         int status = 1;
-        final String query = "(" + CalendarContract.Attendees.EVENT_ID + " = ?)";
+        final String query = "(" + Attendees.EVENT_ID + " = ?)";
         final String[] args = new String[]{String.valueOf(ce.getId())};
-        @SuppressLint({"MissingPermission", "Recycle"}) final Cursor cursoir = contentResolver.query(CalendarContract.Attendees.CONTENT_URI, attendeeProjection, query, args, null);
+        @SuppressLint({"MissingPermission", "Recycle"}) final Cursor cursoir = contentResolver.query(Attendees.CONTENT_URI, attendeeProjection, query, args, null);
         Objects.requireNonNull(cursoir).moveToFirst();
 
         if(cursoir.getCount() > 0) {
@@ -146,6 +146,17 @@ public class CalendarService {
         }
 
         return status;
+    }
+
+    public static void inviteAttendees(Context context, long eventID, String mail){
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(Attendees.ATTENDEE_EMAIL, mail);
+        values.put(Attendees.ATTENDEE_RELATIONSHIP, Attendees.RELATIONSHIP_ATTENDEE);
+        values.put(Attendees.ATTENDEE_TYPE, Attendees.TYPE_OPTIONAL);
+        values.put(Attendees.ATTENDEE_STATUS, Attendees.ATTENDEE_STATUS_INVITED);
+        values.put(Attendees.EVENT_ID, eventID);
+        @SuppressLint("MissingPermission") Uri uri = contentResolver.insert(Attendees.CONTENT_URI, values);
     }
 
     private static long getGoogleCalendarId(Context context) {
@@ -198,8 +209,7 @@ public class CalendarService {
     }
 
     private static CalendarEvent loadEvent(Cursor csr) {
-        int s = csr.getInt(6);
-        return new CalendarEvent(csr.getString(0), new Date(csr.getLong(1)), new Date(csr.getLong(2)), !csr.getString(3).equals("0"), csr.getLong(4), csr.getString(5), csr.getInt(6));
+        return new CalendarEvent(csr.getString(0), new Date(csr.getLong(1)), new Date(csr.getLong(2)), !csr.getString(3).equals("0"), csr.getLong(4), csr.getString(5), csr.getInt(6), true);
     }
 
     private static HashSet<String> getCalenderIds(Cursor cursor) {

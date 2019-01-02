@@ -34,7 +34,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jmjsolution.solarup.R;
+import com.jmjsolution.solarup.interfaces.DeleteEvent;
 import com.jmjsolution.solarup.model.CalendarEvent;
+import com.jmjsolution.solarup.services.calendarService.CalendarService;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
 import com.jmjsolution.solarup.utils.Utils;
 
@@ -48,12 +50,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
     private final Context mContext;
     private final ArrayList<CalendarEvent> mEvents;
     private FragmentActivity mFragmentActivity;
+    private DeleteEvent mDeleteEvent;
     private ArrayList<CalendarEvent> mEventsSorted = new ArrayList<>();
 
-    public EventAdapter(Context context, ArrayList<CalendarEvent> events, FragmentActivity activity){
+    public EventAdapter(Context context, ArrayList<CalendarEvent> events, FragmentActivity activity, DeleteEvent deleteEvent){
         mContext = context;
         mEvents = events;
         mFragmentActivity = activity;
+        mDeleteEvent = deleteEvent;
     }
 
     @NonNull
@@ -130,7 +134,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
         @Override
         public boolean onLongClick(View view) {
             int position = (int) view.getTag();
-            deleteEvent(position);
+            deleteEventGmailCalendar(position);
             return true;
         }
 
@@ -141,34 +145,38 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
             if(view == mLinearLayout){
 
+
+                final Dialog dialog = new Dialog(mContext);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.map_dialog_event);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
+
+                MapView mMapView = dialog.findViewById(R.id.mapView);
+                final LinearLayout linearLayoutAcceptDecline = dialog.findViewById(R.id.acceptDeclineLyt);
+                final LinearLayout linearLayoutSearchingLoca = dialog.findViewById(R.id.searchingLocalisationLyt);
+                final LinearLayout linearLayoutFoundLoca = dialog.findViewById(R.id.localisationFoundLyt);
+                final TextView titleEventTv = dialog.findViewById(R.id.textEventTv);
+                final TextView locationTv = dialog.findViewById(R.id.locationEventTv);
+                final TextView dateTv = dialog.findViewById(R.id.dateEventTv);
+                final Button acceptBtn = dialog.findViewById(R.id.acceptBtn);
+                final Button declineBtn = dialog.findViewById(R.id.declineBtn);
+
                 if(mEvents.get(position).getLocation().length() > 0) {
 
                     final Location location = Utils.getPlaceLocation(mContext, mEvents.get(position).getLocation());
 
                     if (location != null && mEvents.get(position).getEventStatus() != 3) {
 
-                        Dialog dialog = new Dialog(mContext);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.map_dialog_event);
-                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.show();
 
-                        MapView mMapView;
-                        final LinearLayout linearLayoutAcceptDecline = dialog.findViewById(R.id.acceptDeclineLyt);
-                        final LinearLayout linearLayoutSearchingLoca = dialog.findViewById(R.id.searchingLocalisationLyt);
-                        final LinearLayout linearLayoutFoundLoca = dialog.findViewById(R.id.localisationFoundLyt);
-                        final TextView titleEventTv = dialog.findViewById(R.id.textEventTv);
-                        final TextView locationTv = dialog.findViewById(R.id.locationEventTv);
-                        final TextView dateTv = dialog.findViewById(R.id.dateEventTv);
                         linearLayoutFoundLoca.setVisibility(View.GONE);
                         linearLayoutAcceptDecline.setVisibility(View.GONE);
                         linearLayoutSearchingLoca.setVisibility(View.VISIBLE);
 
                         MapsInitializer.initialize(mContext);
 
-                        mMapView = dialog.findViewById(R.id.mapView);
                         mMapView.onCreate(dialog.onSaveInstanceState());
-                        mMapView.onResume();// needed to get the map to display immediately
+                        mMapView.onResume();
                         mMapView.getMapAsync(new OnMapReadyCallback() {
                             @Override
                             public void onMapReady(GoogleMap googleMap) {
@@ -185,22 +193,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
                             }
                         });
                     } else if (location != null) {
-
-                        final Dialog dialog = new Dialog(mContext);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.map_dialog_event);
-                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.show();
 
-                        MapView mMapView;
-                        final LinearLayout linearLayoutAcceptDecline = dialog.findViewById(R.id.acceptDeclineLyt);
-                        final LinearLayout linearLayoutSearchingLoca = dialog.findViewById(R.id.searchingLocalisationLyt);
-                        final LinearLayout linearLayoutFoundLoca = dialog.findViewById(R.id.localisationFoundLyt);
-                        final TextView titleEventTv = dialog.findViewById(R.id.textEventTv);
-                        final TextView locationTv = dialog.findViewById(R.id.locationEventTv);
-                        final Button acceptBtn = dialog.findViewById(R.id.acceptBtn);
-                        final Button declineBtn = dialog.findViewById(R.id.declineBtn);
-                        final TextView dateTv = dialog.findViewById(R.id.dateEventTv);
                         linearLayoutFoundLoca.setVisibility(View.GONE);
                         linearLayoutAcceptDecline.setVisibility(View.GONE);
                         linearLayoutSearchingLoca.setVisibility(View.VISIBLE);
@@ -210,7 +204,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
                         mMapView = dialog.findViewById(R.id.mapView);
                         mMapView.onCreate(dialog.onSaveInstanceState());
-                        mMapView.onResume();// needed to get the map to display immediately
+                        mMapView.onResume();
                         mMapView.getMapAsync(new OnMapReadyCallback() {
                             @Override
                             public void onMapReady(GoogleMap googleMap) {
@@ -238,7 +232,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
                                     @Override
                                     public void onClick(View view) {
                                         UpdateCalendarEntry(position, false);
-                                        deleteEvent(position);
+                                        deleteEventGmailCalendar(position);
                                     }
                                 });
                             }
@@ -248,24 +242,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
                     if(mEvents.get(position).getEventStatus() == 3){
 
-                        final Dialog dialog = new Dialog(mContext);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.map_dialog_event);
-                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.show();
 
-                        final LinearLayout linearLayoutSearchingLoca = dialog.findViewById(R.id.searchingLocalisationLyt);
-                        final LinearLayout linearLayoutAcceptDecline = dialog.findViewById(R.id.acceptDeclineLyt);
-                        final LinearLayout linearLayoutFoundLoca = dialog.findViewById(R.id.localisationFoundLyt);
-                        final TextView titleEventTv = dialog.findViewById(R.id.textEventTv);
-                        final TextView locationTv = dialog.findViewById(R.id.locationEventTv);
-                        final MapView mapView = dialog.findViewById(R.id.mapView);
-                        final Button acceptBtn = dialog.findViewById(R.id.acceptBtn);
-                        final Button declineBtn = dialog.findViewById(R.id.declineBtn);
-                        final TextView dateTv = dialog.findViewById(R.id.dateEventTv);
-
-
-                        mapView.setVisibility(View.GONE);
+                        mMapView.setVisibility(View.GONE);
                         dateTv.setVisibility(View.GONE);
                         linearLayoutAcceptDecline.setVisibility(View.VISIBLE);
                         linearLayoutFoundLoca.setVisibility(View.VISIBLE);
@@ -286,7 +265,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
                             @Override
                             public void onClick(View view) {
                                 UpdateCalendarEntry(position, false);
-                                deleteEvent(position);
+                                deleteEventGmailCalendar(position);
                             }
                         });
                     }
@@ -301,7 +280,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
         }
 
-        private void deleteEvent(int position) {
+        private void deleteEventGmailCalendar(int position) {
             ContentResolver cr = mContext.getContentResolver();
             Uri deleteUri;
             int id = getEventId(mEvents.get(position).getTitle());
@@ -312,6 +291,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
             Objects.requireNonNull(mFragmentActivity.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frameLayout, new AgendaFragment())
                     .commit());
+        }
+
+        private void deleteEventCalendarLocal(int position){
+            mDeleteEvent.onDeleteEvent(position, mEvents.get(position).getId());
         }
 
         @SuppressLint({"InlinedApi", "MissingPermission"})
@@ -370,7 +353,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
             builder.setPositiveButton("oui", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    deleteEvent(position);
+                    if(mEvents.get(position).getIsFromGmail()) {
+                        deleteEventGmailCalendar(position);
+                    } else {
+                        deleteEventCalendarLocal(position);
+                    }
                 }
             });
             builder.setNegativeButton("non", new DialogInterface.OnClickListener() {

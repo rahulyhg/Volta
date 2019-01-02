@@ -1,4 +1,4 @@
-package com.jmjsolution.solarup.ui.activities;
+package com.jmjsolution.solarup.notUsedForNow;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

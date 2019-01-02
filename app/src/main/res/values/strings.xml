@@ -90,4 +90,10 @@
     <string name="ancien_mot_de_passe">Ancien mot de passe</string>
     <string name="nouveau_mot_de_passe">Nouveau mot de passe</string>
     <string name="ressaisisser_le_nouveau_mot_de_passe">Ressaisisser le nouveau mot de passe</string>
+    <string name="entrer_mail_invitation">Entrer un mail pour inviter quelqu\'un</string>
+    <string name="add_more">Ajouter encore</string>
+    <string name="mot_de_passe_oubli">Mot de passe oublié ?</string>
+    <string name="saisisser_une_addresse_mail_de_r_cup_ration">Saisisser une addresse mail de récupération</string>
+    <string name="changer_votre_mot_de_passe_label">Changer votre mot de passe</string>
+    <string name="configurer_l_envoi_automatique_des_relances">Configurer l\'envoi automatique des relances</string>
 </resources>

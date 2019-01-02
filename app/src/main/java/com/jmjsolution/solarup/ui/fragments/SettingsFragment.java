@@ -31,7 +31,7 @@ import static com.jmjsolution.solarup.utils.Constants.ACCOUNT_TYPE;
 import static com.jmjsolution.solarup.utils.Constants.GMAIL;
 import static com.jmjsolution.solarup.utils.Constants.IS_EMAIL_LINKED;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     public static final int REQUEST_CODE_PICK_ACCOUNT = 307;
     @BindView(R.id.gmailLyt) LinearLayout mGmailLyt;
@@ -40,6 +40,7 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.packFragLyt) LinearLayout mPackFragLyt;
     @BindView(R.id.materialFragLyt) LinearLayout mMaterialFragLyt;
     @BindView(R.id.installationTypeLyt) LinearLayout mInstallationTypeLyt;
+    @BindView(R.id.notifLyt) LinearLayout mNotifLyt;
 
     private SharedPreferences mSharedPref;
 
@@ -51,36 +52,6 @@ public class SettingsFragment extends Fragment {
 
         mSharedPref = Objects.requireNonNull(getContext()).getSharedPreferences(CalendarService.MY_PREFS_NAME, Context.MODE_PRIVATE);
         configureGmailAccount();
-
-        mPackFragLyt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.frameLayout, new PackFragment())
-                        .commit();
-            }
-        });
-
-        mMaterialFragLyt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.frameLayout, new MaterialFragment())
-                        .commit();
-            }
-        });
-
-        mInstallationTypeLyt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.frameLayout, new TypeInstallationFragment())
-                        .commit();
-            }
-        });
 
         return view;
     }
@@ -133,5 +104,28 @@ public class SettingsFragment extends Fragment {
         } else {
             mGmailIv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.MULTIPLY);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == mPackFragLyt){
+            launchFrag(new PackFragment());
+        }
+        if(view == mMaterialFragLyt){
+            launchFrag(new MaterialFragment());
+        }
+        if(view == mInstallationTypeLyt){
+            launchFrag(new TypeInstallationFragment());
+        }
+        if(view == mNotifLyt){
+            launchFrag(new ReminderMailSettingFragment());
+        }
+    }
+
+    private void launchFrag(Fragment fragment){
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.frameLayout, fragment)
+                .commit();
     }
 }
