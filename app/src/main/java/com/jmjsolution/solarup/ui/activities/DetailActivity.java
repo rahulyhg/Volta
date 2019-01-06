@@ -25,6 +25,7 @@ import com.jmjsolution.solarup.ui.fragments.ContactUsFragment;
 import com.jmjsolution.solarup.ui.fragments.EmptyFragment;
 import com.jmjsolution.solarup.R;
 import com.jmjsolution.solarup.ui.fragments.AgendaFragment;
+import com.jmjsolution.solarup.ui.fragments.PicturesToAddFragment;
 import com.jmjsolution.solarup.ui.fragments.ProjectsFragment;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 
@@ -54,7 +55,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
-    private SharedPreferences mSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        mSharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         mDatabase = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -84,7 +84,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }  else if(cardviewNumber == 3){
                 startSettingsFragment(mReglagesWdw);
             } else if (cardviewNumber == 4) {
-                if(mSharedPref.getBoolean(IS_EMAIL_LINKED, false)){
+                if(sharedPref.getBoolean(IS_EMAIL_LINKED, false)){
                     startContactUsFragment(mContactUsWdw);
                 } else {
                     startEmptyFrag(mContactUsWdw);
@@ -130,11 +130,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void startAgendaFrag(CardView cardView, int cardviewNumber){
         cardView.setCardBackgroundColor(getResources().getColor(R.color.colorAccent));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        AgendaFragment agendaFragment = new AgendaFragment();
+        //AgendaFragment agendaFragment = new AgendaFragment();
+        PicturesToAddFragment picturesToAddFragment = new PicturesToAddFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("cardviewNumber", cardviewNumber);
-        agendaFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.frameLayout, agendaFragment);
+        //agendaFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.frameLayout, picturesToAddFragment);
+        picturesToAddFragment.setArguments(bundle);
         fragmentTransaction.commit();
     }
 

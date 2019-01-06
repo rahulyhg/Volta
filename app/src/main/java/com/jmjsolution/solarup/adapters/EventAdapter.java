@@ -92,6 +92,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHod
 
     }
 
+    public ArrayList<CalendarEvent> getEventsSorted(String timeStamp){
+        ArrayList<CalendarEvent> eventsLocalSorted = new ArrayList<>();
+
+        for(CalendarEvent event: mEvents){
+            @SuppressLint("SimpleDateFormat") String timeStampToCompare = new SimpleDateFormat("YYYY/MM/dd").format(event.getBegin());
+            if(timeStamp.equalsIgnoreCase(timeStampToCompare)){
+                eventsLocalSorted.add(event);
+            }
+        }
+        return eventsLocalSorted;
+    }
+
     public class EventViewHodler extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
 
         private LinearLayout mLinearLayout;

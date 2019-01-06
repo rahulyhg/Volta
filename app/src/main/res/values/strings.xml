@@ -96,4 +96,7 @@
     <string name="saisisser_une_addresse_mail_de_r_cup_ration">Saisisser une addresse mail de récupération</string>
     <string name="changer_votre_mot_de_passe_label">Changer votre mot de passe</string>
     <string name="configurer_l_envoi_automatique_des_relances">Configurer l\'envoi automatique des relances</string>
+    <string name="power_pack">puissance</string>
+    <string name="nb_modules_pack">Nombres de modules</string>
+    <string name="finish">CREER</string>
 </resources>

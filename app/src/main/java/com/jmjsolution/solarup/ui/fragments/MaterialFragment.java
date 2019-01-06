@@ -34,6 +34,7 @@ import com.jmjsolution.solarup.model.Materiel;
 import com.jmjsolution.solarup.model.Pack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -56,6 +57,7 @@ public class MaterialFragment extends Fragment implements DeleteMaterial {
     private String mTitleMaterial;
     private String mIdMaterial;
     private String mPriceMaterial;
+    private List<String> mDesc;
 
     @Nullable
     @Override
@@ -63,6 +65,7 @@ public class MaterialFragment extends Fragment implements DeleteMaterial {
         View view = inflater.inflate(R.layout.material_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        mDesc = new ArrayList<>();
         mLoadingMaterialPb.setVisibility(View.VISIBLE);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
@@ -127,7 +130,7 @@ public class MaterialFragment extends Fragment implements DeleteMaterial {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mPriceMaterial = taskEditText.getText().toString();
-                        onCreateMaterial();
+                        setterDescMaterialDialog();
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)
@@ -135,9 +138,32 @@ public class MaterialFragment extends Fragment implements DeleteMaterial {
         dialog.show();
     }
 
+    private void setterDescMaterialDialog(){
+        final EditText taskEditText = new EditText(getActivity());
+        AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+                .setTitle(R.string.enter_price_label)
+                .setView(taskEditText)
+                .setPositiveButton(R.string.add_more, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDesc.add(taskEditText.getText().toString());
+                        setterDescMaterialDialog();
+                    }
+                })
+                .setNegativeButton(R.string.finish, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mDesc.add(taskEditText.getText().toString());
+                        onCreateMaterial();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
     private void onCreateMaterial(){
         mDb.collection(ROOT).document(Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()))
-                .collection(MATERIAL_BRANCH).document(mIdMaterial).set(new Materiel(mTitleMaterial, null, Integer.parseInt(mPriceMaterial), mIdMaterial), SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                .collection(MATERIAL_BRANCH).document(mIdMaterial).set(new Materiel(mTitleMaterial, null, Integer.parseInt(mPriceMaterial), mIdMaterial, mDesc), SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();

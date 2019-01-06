@@ -8,14 +8,34 @@ public class Pack {
     private List<String> mDescriptif;
     private int mPrix;
     private String mId;
+    private int mNb_modules;
+    private int mPuissance;
 
     public Pack(){}
 
-    public Pack(String nom, List<String> descriptif, int prix, String id) {
+    public Pack(String nom, List<String> descriptif, int prix, String id, int nb_modules, int puissance) {
         mNom = nom;
         mDescriptif = descriptif;
         mPrix = prix;
         mId = id;
+        mNb_modules = nb_modules;
+        mPuissance = puissance;
+    }
+
+    public int getNb_modules() {
+        return mNb_modules;
+    }
+
+    public void setNb_modules(int nb_modules) {
+        mNb_modules = nb_modules;
+    }
+
+    public int getPuissance() {
+        return mPuissance;
+    }
+
+    public void setPuissance(int puissance) {
+        mPuissance = puissance;
     }
 
     public String getNom() {

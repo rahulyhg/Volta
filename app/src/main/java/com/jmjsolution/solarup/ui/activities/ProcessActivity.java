@@ -37,11 +37,11 @@ public class ProcessActivity extends AppCompatActivity implements StepViewUpdate
         stepBeans.add(new Step("Finalisation", Step.State.NOT_COMPLETED));
         mHorizontalStepView
                 .setSteps(stepBeans)
-                .setCompletedStepTextColor(getResources().getColor(android.R.color.black)) // Default: Color.WHITE
-                .setNotCompletedStepTextColor(getResources().getColor(android.R.color.white)) // Default: Color.WHITE
-                .setCurrentStepTextColor(getResources().getColor(R.color.colorAccent)) // Default: Color.WHITE
-                .setCompletedLineColor(getResources().getColor(android.R.color.white)) // Default: Color.WHITE
-                .setNotCompletedLineColor(getResources().getColor(android.R.color.white)) // Default: Color.WHITE
+                .setCompletedStepTextColor(getResources().getColor(android.R.color.black))
+                .setNotCompletedStepTextColor(getResources().getColor(android.R.color.white))
+                .setCurrentStepTextColor(getResources().getColor(R.color.colorAccent))
+                .setCompletedLineColor(getResources().getColor(android.R.color.white))
+                .setNotCompletedLineColor(getResources().getColor(android.R.color.white))
                 .setTextSize(14)
                 .setCircleRadius(14)
                 .setLineLength(68);

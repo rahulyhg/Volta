@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -45,6 +46,8 @@ import com.jmjsolution.solarup.views.EventsCalendar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -101,14 +104,11 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback,
         mIsLinked = sharedPref.getBoolean(IS_EMAIL_LINKED, false);
         setCalendarView();
 
-
         if (mIsLinked) {
             CalendarService.readCalendar(Objects.requireNonNull(getContext()), 90, 0);
             setCalendarIfGmailIsLinked();
-            addEventsToCalendar();
         } else {
             setCalendarLocal();
-            addEventsToCalendar();
         }
 
         mSeeAllEventsBtn.setOnClickListener(new View.OnClickListener() {
@@ -135,12 +135,8 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback,
                             mEventsListWithoutGmail.add(event.toObject(CalendarEvent.class));
                         }
 
-                        mProgressBar.setVisibility(View.GONE);
+                        Collections.sort(mEventsListWithoutGmail);
                         mEventAdapter = new EventAdapter(getContext(), mEventsListWithoutGmail, getActivity(), AgendaFragment.this);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                        mEventsRv.setLayoutManager(layoutManager);
-                        mEventsRv.setAdapter(mEventAdapter);
-                        onDaySelected(Calendar.getInstance());
                         addEventsToCalendar();
                     }
                 } else {
@@ -168,10 +164,6 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback,
             }
 
             mEventAdapter = new EventAdapter(getContext(), CalendarService.mEventsList, getActivity(), this);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            mEventsRv.setLayoutManager(layoutManager);
-            mEventsRv.setAdapter(mEventAdapter);
-            mProgressBar.setVisibility(View.GONE);
             addEventsToCalendar();
         } else {
             mEventsRv.setVisibility(View.GONE);
@@ -309,6 +301,14 @@ public class AgendaFragment extends Fragment implements EventsCalendar.Callback,
             }
         }
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mEventsRv.setLayoutManager(layoutManager);
+        mEventsRv.setAdapter(mEventAdapter);
+        mProgressBar.setVisibility(View.GONE);
+        mConfigureCompteTv.setVisibility(View.GONE);
+        mEventsRv.setVisibility(View.VISIBLE);
+        mEventAdapter.notifyDataSetChanged();
+        eventsCalendar.reset();
     }
 
     private void titleSetterEvent(){

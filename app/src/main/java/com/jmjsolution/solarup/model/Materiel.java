@@ -1,11 +1,33 @@
 package com.jmjsolution.solarup.model;
 
+import java.util.List;
 import java.util.Map;
 
 public class Materiel {
 
     private String mNom, mCategorie;
     private int mPrix;
+    private List<String> mDescriptif;
+
+    public Materiel(String nom, String categorie, int prix, String id, List<String> descriptif) {
+        mNom = nom;
+        mCategorie = categorie;
+        mPrix = prix;
+        mId = id;
+        mDescriptif = descriptif;
+    }
+
+    public Materiel() {
+    }
+
+    public List<String> getDescriptif() {
+        return mDescriptif;
+    }
+
+    public void setDescriptif(List<String> descriptif) {
+        mDescriptif = descriptif;
+    }
+
 
     public String getId() {
         return mId;
@@ -16,16 +38,6 @@ public class Materiel {
     }
 
     private String mId;
-
-    public Materiel(String nom, String categorie, int prix, String id) {
-        mNom = nom;
-        mCategorie = categorie;
-        mPrix = prix;
-        mId = id;
-    }
-
-    public Materiel() {
-    }
 
     public String getNom() {
         return mNom;

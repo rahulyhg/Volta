@@ -58,6 +58,8 @@ public class PackFragment extends Fragment implements DeletePack {
     private String mIdPack;
     private List<String> mDescPack;
     private int mPricePack;
+    private int mPowerPack;
+    private int mNbModules;
 
     @Nullable
     @Override
@@ -110,6 +112,40 @@ public class PackFragment extends Fragment implements DeletePack {
                     public void onClick(DialogInterface dialog, int which) {
                         mTitlePack = taskEditText.getText().toString();
                         mIdPack = taskEditText.getText().toString() + String.valueOf(System.currentTimeMillis());
+                        setterPowerPackDialog();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create();
+        dialog.show();
+    }
+
+    private void setterPowerPackDialog(){
+        final EditText taskEditText = new EditText(getActivity());
+        AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+                .setTitle(R.string.power_pack)
+                .setView(taskEditText)
+                .setPositiveButton(R.string.valid, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPowerPack = Integer.parseInt(taskEditText.getText().toString());
+                        setterNumberModuls();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create();
+        dialog.show();
+    }
+
+    private void setterNumberModuls(){
+        final EditText taskEditText = new EditText(getActivity());
+        AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+                .setTitle(R.string.nb_modules_pack)
+                .setView(taskEditText)
+                .setPositiveButton(R.string.valid, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mNbModules = Integer.parseInt(taskEditText.getText().toString());
                         setterChoiceMaterial();
                     }
                 })
@@ -179,7 +215,7 @@ public class PackFragment extends Fragment implements DeletePack {
 
     private void onCreatePack(){
         mDb.collection(ROOT).document(Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()))
-                .collection(PACKS_BRANCH).document(mIdPack).set(new Pack(mTitlePack, mDescPack, mPricePack, mIdPack), SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                .collection(PACKS_BRANCH).document(mIdPack).set(new Pack(mTitlePack, mDescPack, mPricePack, mIdPack, mNbModules, mPowerPack), SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();

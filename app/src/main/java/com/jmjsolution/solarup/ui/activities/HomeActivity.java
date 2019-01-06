@@ -1,5 +1,6 @@
 package com.jmjsolution.solarup.ui.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,10 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.jmjsolution.solarup.R;
+import com.jmjsolution.solarup.interfaces.GetDataSolarService;
+import com.jmjsolution.solarup.model.Solar;
 import com.jmjsolution.solarup.services.emailService.GmailService;
+import com.jmjsolution.solarup.services.retrofitClient.RetrofitClientInstance;
 import com.jmjsolution.solarup.ui.fragments.SettingsFragment;
 
 import java.util.Calendar;
@@ -41,6 +45,9 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.jmjsolution.solarup.services.calendarService.CalendarService.MY_PREFS_NAME;
 import static com.jmjsolution.solarup.utils.Constants.Database.EMAIL_RECUPERATION;
@@ -69,6 +76,7 @@ public class HomeActivity extends AppCompatActivity {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
     };
 
 
@@ -82,9 +90,21 @@ public class HomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         setCalendarHorizontal();
-
         changePassword();
 
+        GetDataSolarService service = RetrofitClientInstance.getRetrofit().create(GetDataSolarService.class);
+        Call<Solar> call = service.getSolarData(53.0, 13.2, 4, 1, 10, 1, 40, 180);
+        call.enqueue(new Callback<Solar>() {
+            @Override
+            public void onResponse(Call<Solar> call, Response<Solar> response) {
+                response.body();
+            }
+
+            @Override
+            public void onFailure(Call<Solar> call, Throwable t) {
+                t.getLocalizedMessage();
+            }
+        });
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
